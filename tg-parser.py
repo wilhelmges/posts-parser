@@ -31,9 +31,9 @@ def grab_groups():
                 #      'input_entity', 'is_channel', 'is_group', 'is_user', 'message', 'name', 'pinned', 'send_message', 'stringify',
                 #      'title', 'to_dict', 'unread_count', 'unread_mentions_count']
 
-def collect_posts(category="danceparty"):
+def collect_posts(category="dance"):
     current_date =(datetime.date.today())
-    kyivdancesources = supabase.table('sources').select("id, slug, topic, city").eq('media', 'telega').eq('category',category).limit(20).execute().data
+    kyivdancesources = supabase.table('sources').select("id, slug, topic, city").eq('media', 'telega').eq('category5',category).limit(20).execute().data
     for source in kyivdancesources:
         print(source['slug'])
 
