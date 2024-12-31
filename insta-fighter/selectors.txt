@@ -1,0 +1,3 @@
+article div a img[alt]
+
+article div div div div a

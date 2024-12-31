@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <title>posts dashboard</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <style>
+        textarea {
+            width: 100%;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body>
+
+<main class="container" x-data="posts" x-init="initData">
+    <p class="title">
+        posts dashboard, some <span x-text="greeting">static</span> content
+    </p>
+
+    <template x-for="post in posts">
+        <div>
+            <textarea rows="9" x-text="post.fulltext"></textarea>
+            <button x-on:click="arxivPost(post.id)">arxiv</button>
+            <button x-on:click="repostPost(post.id)">repost</button>
+            @<span x-text="post.source_slug"></span>
+            -<span x-text="post.created_at"></span>
+        </div>
+    </template>
+</main>
+
+<section class="section">
+    <div>
+        <div class="columns">
+            <div class="column">
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+<script src="main.js"></script>
+<script defer src="https://use.fontawesome.com/releases/v5.15.3/js/all.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,1 @@
+{"session_id": "64650656760%3Af6PmbdF284XOeR%3A13%3AAYezf4C5TNCb3d30AAnxYjIkibhAPpjEzzV09df7Pg", "rur": "\"LDC\\05464650656760\\0541739355783:01f701e5d5e407afb1ca7d69ee9fbc53c011c36812d8e5303d33fe59942870926259ff4a\"", "mid": "ZctDAgALAAHqdwTaklJ1P68zE6DH", "user_id": "64650656760", "ig_did": "", "identifier": "yulianovich", "username": "yulianovich"}
