@@ -17,7 +17,7 @@ def prepare_posts(topic='dance'):
             print(date)
             brief = create_brief_for_event(text)
             print(brief,)
-            #data, count = supabase.table('posts').update({'event_date': date, 'event_brief':brief}).eq('id', repost['id']).execute()
+            data, count = supabase.table('posts').update({'event_date': date, 'brief':brief}).eq('id', repost['id']).execute()
         except Exception as e:
             print(str(e))
 
@@ -30,7 +30,7 @@ def publish_dance_parties():
     for city in  cities:
         topic = cities[city]
         response = supabase.table('posts').select(
-            "text, event_date, event_brief, id").eq('status', 'torepost').eq('city',city).eq('category', 'dance').gte('event_date', str(current)).order('event_date', desc=False).limit(20).execute().data
+            "fulltext, event_date, brief, id").eq('status', 'torepost').eq('city',city).eq('category', 'dance').gte('event_date', str(current)).order('event_date', desc=False).limit(20).execute().data
         print(city, topic, len(response))
         if len(response)<1:
             continue
@@ -40,7 +40,7 @@ def publish_dance_parties():
             digest = 'дайджест вечірок на тиждень \n\n'
             for repost in response:
                 event_date = datetime.datetime.strptime(repost['event_date'], "%Y-%m-%d")
-                text = repost['event_brief'] if repost['event_brief'] else repost['text']
+                text = repost['brief'] if repost['brief'] else repost['fulltext']
                 digest = digest + f"<b>{event_date.strftime('%A - %d %B')}</b>\n {text}\n\n"
             if city=="Київ":
                 digest = digest + f"<b> анонси вечірок у Львові, Дніпрі, Одесі, Тернополі, Києві ви можете подивитись в групі https://t.me/opendance_life, також тут можна глянути анонси нових танцювальних наборів і танцювальні фестивалі"
@@ -68,12 +68,11 @@ def iterate_reposts(topic='test'):
 
 if __name__ == "__main__":
     pass
-    # publish_dance_parties()
+    publish_dance_parties()
     # iterate_reposts('culture')
     # iterate_reposts('testdance')
 
-
-    prepare_posts('dance');
+    # prepare_posts('dance');
     # prepare_posts('culture')
 
 def msg_test():
