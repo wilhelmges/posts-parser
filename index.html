@@ -1,51 +1,128 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Панель керування постами для системи агрегації подій">
+    
+    <title>Панель керування постами</title>
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
-    <title>posts dashboard</title>
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <style>
-        textarea {
-            width: 100%;
-            box-sizing: border-box;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-
-<main class="container" x-data="posts" x-init="initData">
-    <p class="title">
-        posts dashboard, some <span x-text="greeting">static</span> content
-    </p>
-
-    <template x-for="post in posts">
-        <div>
-            <textarea rows="9" x-text="post.fulltext"></textarea>
-            <button x-on:click="arxivPost(post.id)">arxiv</button>
-            <button x-on:click="repostPost(post.id)">repost</button>
-            @<span x-text="post.source_slug"></span>
-            -<span x-text="post.created_at"></span>
-        </div>
-    </template>
-</main>
-
-<section class="section">
-    <div>
+    <main class="container p-4" x-data="posts" x-init="initData">
         <div class="columns">
             <div class="column">
+                <h1 class="title">
+                    Панель керування постами
+                </h1>
+
+                <div class="field is-grouped mb-4">
+                    <div class="control">
+                        <div class="select">
+                            <select x-model="currentFilter" 
+                            x-model="currentFilter"
+                            @change="initData()">
+                                <option >Виберіть, що ви бажаєте переглянути</option>
+                                <option :value="PostStatus.NOT_REVIEWED">Непереглянуті</option>
+                                <option :value="PostStatus.READYTOPOST">Готові до публікації</option>
+                                <option :value="PostStatus.NEED_SUMMARY">Потребують опису</option>
+                                <option :value="PostStatus.ARCHIVED">Архівовані</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <template x-for="post in posts" :key="post.id">
+                    <div class="post-container">
+                        <div class="columns">
+                            <div class="column is-7">
+                                <textarea 
+                                    class="textarea" 
+                                    rows="9" 
+                                    x-text="post.fulltext"
+                                    @input="updatePost(post.id, $event.target.value)"
+                                ></textarea>
+                            </div>
+                            <div class="column is-4">
+                                <textarea 
+                                    class="textarea" 
+                                    rows="9" 
+                                    x-text="post.brief"
+                                    @change="updateBrief(post.id, $event.target.value)"
+                                ></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="field" x-show="post.event_date">
+                            <div class="control is-half">
+                                <span class="mr-2">Дата проведення:</span>
+                                <input 
+                                    type="date" 
+                                    class="input is-normal is-half"
+                                    :value="post.event_date"
+                                    @input="updateEventDate(post.id, $event.target.value)"
+                                    lang="uk"
+                                    pattern="dd-MM"
+                                    style="width: 50%;"
+                                >
+                            </div>
+                        </div>
+                        
+                        <div class="button-group">
+                            <button 
+                                class="button is-info" 
+                                x-show="currentFilter === PostStatus.NOT_REVIEWED"
+                                x-on:click="markAsNeedSummary(post.id)"
+                            >
+                                <span>для цього анонсу потрібно резюме (NEED_SUMMARY)</span>
+                            </button>
+                            
+                            <button 
+                                class="button is-success" 
+                                x-show="post.brief?.trim() && post.event_date && PostStatus.NEED_SUMMARY"
+                                x-on:click="markAsReady(post.id)"
+                            >
+                                <span>Готово до публікації (READYTOPOST)</span>
+                            </button>
+                            
+                            <button 
+                                class="button is-warning" 
+                                x-on:click="markPostAsArchived(post.id)"
+                                x-show="post.status!==PostStatus.ARCHIVED"
+                            >
+                                <span class="icon">
+                                    <i class="fas fa-archive"></i>
+                                </span>
+                                <span>Архівувати (ARCHIVED)</span>
+                                
+                            </button>
+
+                            <button
+                                class="button is-warning"
+                                x-show="post.status === PostStatus.ARCHIVED"
+                                <span>Відновити з архіву (NOT_REVIEWED)</span>
+                            </button>    
+                        </div>
+
+                        <div class="post-meta">
+                            джерело:
+                            <span class="icon">
+                                <i class="fas fa-at"></i>
+                            </span>
+                            <span x-text="post.source_slug"></span>
+                        </div>
+                    </div>
+                </template>
             </div>
         </div>
-    </div>
-</section>
+    </main>
 
-<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-<script src="main.js"></script>
-<script defer src="https://use.fontawesome.com/releases/v5.15.3/js/all.js"></script>
-
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="main.js"></script>
+    <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" defer></script>
 </body>
-
 </html>

@@ -1,0 +1,25 @@
+textarea {
+    width: 100%;
+    box-sizing: border-box;
+    resize: vertical;
+    min-height: 100px;
+}
+
+.post-container {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.post-meta {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0.5rem;
+}
+
+.button-group {
+    margin-top: 0.5rem;
+    display: flex;
+    gap: 0.5rem;
+} 

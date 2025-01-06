@@ -7,7 +7,7 @@ api_id = 14535551; api_hash = 'ee049ec9130de53ec5336fe819e49365' # app1
 
 def prepare_posts(topic='dance'):
     current = datetime.date.today()
-    responce = supabase.table('posts').select("fulltext, id, created_at, source_slug").eq('status','torepost').eq('category',topic).is_('brief', 'null').order('created_at', desc=True).limit(15).execute().data
+    responce = supabase.table('posts').select("fulltext, id, created_at, source_slug").eq('status','needsummary').eq('category',topic).order('created_at', desc=True).limit(15).execute().data #.is_('brief', 'null')
     for repost in responce:
         text = repost['fulltext']
         # print(repost['created_at'], text[:40])
@@ -68,11 +68,11 @@ def iterate_reposts(topic='test'):
 
 if __name__ == "__main__":
     pass
-    publish_dance_parties()
+    # publish_dance_parties()
     # iterate_reposts('culture')
     # iterate_reposts('testdance')
 
-    # prepare_posts('dance');
+    prepare_posts('dance');
     # prepare_posts('culture')
 
 def msg_test():

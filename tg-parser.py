@@ -7,33 +7,9 @@ import re
 api_id = 14535551 #app1
 api_hash = 'ee049ec9130de53ec5336fe819e49365'
 
-def grab_groups():
-    c=0
-
-    with TelegramClient('vilyashko', api_id, api_hash) as client:
-        for dialog in client.iter_dialogs():
-            if dialog.is_group or dialog.is_channel:
-                c=c+1
-                group = dialog.entity
-                print(dialog.title, group.id, group.username if hasattr(group,'username') else '' )
-                if c>300:
-                    exit()
-                try:
-                    supabase.table('sources').insert(
-                        {"id":group.id, "profile": group.username if hasattr(group,'username') else group.id, "description": dialog.title, "platform": "telega",
-                         "category": "todefine", "id_on_platform": group.id}).execute()
-                except:
-                    print('maybe exists')
-
-                # dialog.entity: 'access_hash', 'admin_rights', 'banned_rights', 'broadcast', 'call_active', 'call_not_empty', 'creator', 'date', 'default_banned_rights', 'fake', 'forum', 'from_reader', 'gigagroup', 'has_geo', 'has_link', 'id', 'join_request', 'join_to_send', 'left', 'megagroup', 'min', 'noforwards', 'participants_count', 'photo', 'pretty_format', 'restricted', 'restriction_reason', 'scam', 'serialize_bytes', 'serialize_datetime', 'signatures', 'slowmode_enabled', 'stories_hidden', 'stories_hidden_min', 'stories_max_id', 'stories_unavailable', 'stringify', 'title', 'to_dict', 'to_json', 'username', 'usernames', 'verified']
-                
-                # dialog - 'archive', 'archived', 'date', 'delete', 'dialog', 'draft', 'entity', 'folder_id', 'id',
-                #      'input_entity', 'is_channel', 'is_group', 'is_user', 'message', 'name', 'pinned', 'send_message', 'stringify',
-                #      'title', 'to_dict', 'unread_count', 'unread_mentions_count']
-
 def collect_posts(category="dance"):
     current_date =(datetime.date.today())
-    kyivdancesources = supabase.table('sources').select("id, slug, topic, city").eq('media', 'telega').eq('category5',category).limit(20).execute().data
+    kyivdancesources = supabase.table('sources').select("id, slug, topic, city").eq('media', 'telega').eq('category',category).limit(20).execute().data
     for source in kyivdancesources:
         print(source['slug'])
 
@@ -100,3 +76,26 @@ lviv = [{'descr':'lviv main','group':'https://t.me/socialdanceinLviv'},{'descr':
     #         client.send_message(id, message)
     #sync_send('alxwebdev', '@helvetian',"добрий день, а вакансія java-розробника ще актуальна? ")   #  581589257   629959045
 
+def grab_groups():
+    c=0
+
+    with TelegramClient('vilyashko', api_id, api_hash) as client:
+        for dialog in client.iter_dialogs():
+            if dialog.is_group or dialog.is_channel:
+                c=c+1
+                group = dialog.entity
+                print(dialog.title, group.id, group.username if hasattr(group,'username') else '' )
+                if c>300:
+                    exit()
+                try:
+                    supabase.table('sources').insert(
+                        {"id":group.id, "profile": group.username if hasattr(group,'username') else group.id, "description": dialog.title, "platform": "telega",
+                         "category": "todefine", "id_on_platform": group.id}).execute()
+                except:
+                    print('maybe exists')
+
+                # dialog.entity: 'access_hash', 'admin_rights', 'banned_rights', 'broadcast', 'call_active', 'call_not_empty', 'creator', 'date', 'default_banned_rights', 'fake', 'forum', 'from_reader', 'gigagroup', 'has_geo', 'has_link', 'id', 'join_request', 'join_to_send', 'left', 'megagroup', 'min', 'noforwards', 'participants_count', 'photo', 'pretty_format', 'restricted', 'restriction_reason', 'scam', 'serialize_bytes', 'serialize_datetime', 'signatures', 'slowmode_enabled', 'stories_hidden', 'stories_hidden_min', 'stories_max_id', 'stories_unavailable', 'stringify', 'title', 'to_dict', 'to_json', 'username', 'usernames', 'verified']
+                
+                # dialog - 'archive', 'archived', 'date', 'delete', 'dialog', 'draft', 'entity', 'folder_id', 'id',
+                #      'input_entity', 'is_channel', 'is_group', 'is_user', 'message', 'name', 'pinned', 'send_message', 'stringify',
+                #      'title', 'to_dict', 'unread_count', 'unread_mentions_count']

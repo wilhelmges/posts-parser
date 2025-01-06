@@ -5,14 +5,14 @@ import os; from dotenv import load_dotenv; load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAPI"))
 
 def refine(date:str='18.02')->str:
-    date ='2024-' + date[5:]
+    date ='2025-' + date[5:]
     return date
     date = datetime.strptime(date, "%Y.%d.%m").date()
     return str(date)
 
 def find_date_for_danceparty(text: str):
     # data = '2018-02-13'
-    content = 'look for the event date in the Ukrainian text below. You must  convert this event date to format YYYY-MM-DD. If you put redundant information - I will kill you, fucking bot. I need only pure result, without explanation: ' + text #, приведи цю дату, у відповіді вкажи виключно дату і нічого зайвого
+    content = 'look for the event date in the Ukrainian text below. You must  convert this event date to format YYYY-MM-DD. If you put redundant information - I will KILL you, fucking bot. I need ONLY pure result, without explanation: ' + text #, приведи цю дату, у відповіді вкажи виключно дату і нічого зайвого
     response = client.chat.completions.create(
         messages=[
             {

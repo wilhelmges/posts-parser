@@ -1,57 +1,144 @@
 const {createClient} = supabase
 
-
+const PostStatus = {
+    ALL: 'all',
+    NOT_REVIEWED: 'notreviewed',
+    NEED_SUMMARY: 'needsummary',
+    READYTOPOST: 'readytopost',
+    ARCHIVED: 'archived'
+};
 
 document.addEventListener('alpine:init', () => {
     const supabase = createClient('https://myfvudumhgbrufiiclxn.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15ZnZ1ZHVtaGdicnVmaWljbHhuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzUwNTg0NDcsImV4cCI6MjA1MDYzNDQ0N30.C1p1G5lDsOhjSMWWKIX58Ct4QQVRUhTX_KyFDZ9qJOw')
+    
     Alpine.data('posts', () => ({
-        greeting: 'dynamic',
-        items: [],
+        locale: 'uk',
+        currentFilter: PostStatus.NEED_SUMMARY,
         posts: [],
-        initData: async function (url = 'http://localhost:1337/api/raw-posts') {
-            console.log('hello, posts');
+        
+        initData: async function () {
             try {
-                const {data, error3} = await supabase.from('posts').select('id, fulltext, source_slug,created_at').eq('status', 'notreviewed')
-                    .eq('category','dance').limit(25).order('created_at', { ascending: false });
-                console.log(data);
+                const {data, error} = await supabase
+                    .from('posts')
+                    .select('id, fulltext, brief, source_slug, event_date')
+                    .eq('status', this.currentFilter)
+                    .eq('category', 'dance')
+                    .limit(25)
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
                 this.posts = data;
             } catch (error) {
                 console.error('Error:', error.message);
             }
         },
-        arxivPost: async function (id){
-            console.log(id);
-            const {error} = await supabase.from('posts').update({status: 'arxived'}).eq('id', id)
-            let indexToRemove = this.posts.findIndex(item => item.id === id);
-            if (indexToRemove !== -1) {
-                this.posts.splice(indexToRemove, 1);
+
+        updatePost: async function(id, value) {
+            try {
+                const {error} = await supabase
+                    .from('posts')
+                    .update({fulltext: value})
+                    .eq('id', id);
+                    
+                if (error) throw error;
+                
+                const post = this.posts.find(p => p.id === id);
+                if (post) {
+                    post.fulltext = value;
+                }
+            } catch (error) {
+                console.error('Error updating post:', error.message);
             }
         },
-        repostPost: async function (id){
-            console.log(id);
-            const {error} = await supabase.from('posts').update({status: 'torepost'}).eq('id', id)
-            let indexToRemove = this.posts.findIndex(item => item.id === id);
-            if (indexToRemove !== -1) {
-                this.posts.splice(indexToRemove, 1);
+
+        formatDate: function(dateString) {
+            return new Date(dateString).toLocaleString('uk-UA');
+        },
+
+        markPostAsArchived: async function (id) {
+            try {
+                const {error} = await supabase
+                    .from('posts')
+                    .update({status: PostStatus.ARCHIVED})
+                    .eq('id', id);
+                
+                if (error) throw error;
+                this.posts = this.posts.filter(post => post.id !== id);
+            } catch (error) {
+                console.error('Error:', error.message);
             }
+        },
+
+        markAsNeedSummary: async function(id) {
+            try {
+                const {error} = await supabase
+                    .from('posts')
+                    .update({status: PostStatus.NEED_SUMMARY})
+                    .eq('id', id);
+                
+                if (error) throw error;
+                
+                this.posts = this.posts.filter(post => post.id !== id);
+            } catch (error) {
+                console.error('Помилка при оновленні статусу:', error.message);
+            }
+        },
+        markAsReady: async function(id) {
+            try {
+                const {error} = await supabase
+                    .from('posts')
+                    .update({status: PostStatus.READYTOPOST})
+                    .eq('id', id);
+                
+                if (error) throw error;
+                
+                // Видаляємо пост з поточного списку відображення
+                this.posts = this.posts.filter(post => post.id !== id);
+            } catch (error) {
+                console.error('Помилка при позначенні поста як готового:', error.message);
+            }
+        },
+
+        updateBrief: async function(id, value) {
+            try {
+                const {error} = await supabase
+                    .from('posts')
+                    .update({brief: value})
+                    .eq('id', id);
+                    
+                if (error) throw error;
+                
+                const post = this.posts.find(p => p.id === id);
+                if (post) {
+                    post.brief = value;
+                }
+            } catch (error) {
+                console.error('Помилка оновлення короткого опису:', error.message);
+            }
+        },
+
+        updateEventDate: async function(id, value) {
+            try {
+                const {error} = await supabase
+                    .from('posts')
+                    .update({event_date: value})
+                    .eq('id', id);
+                    
+                if (error) throw error;
+                
+                const post = this.posts.find(p => p.id === id);
+                if (post) {
+                    post.event_date = value;
+                }
+            } catch (error) {
+                console.error('Помилка оновлення дати події:', error.message);
+            }
+        },
+
+        init() {
+            this.$watch('currentFilter', () => {
+                this.initData();
+            });
         }
     }))
 })
-
-async function processdata() {
-//    const supabase = createClient('https://wepnusszkcvcxrtnwpbe.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndlcG51c3N6a2N2Y3hydG53cGJlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDY4ODcwNzQsImV4cCI6MjAyMjQ2MzA3NH0.6vYE9OyGZ0yGwgeFpL6U3sS5eJVPhyEn1tE_owSdynI')
-
-    const {error1} = await supabase
-        .from('categories')
-        .insert({title: 'skating'})
-
-    const {error2} = await supabase
-        .from('categories')
-        .delete()
-        .eq('id', 3)
-
-    const {data, error3} = await supabase
-        .from('categories')
-        .select()
-    console.log(data);
-}
