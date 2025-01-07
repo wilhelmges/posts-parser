@@ -13,7 +13,7 @@ document.addEventListener('alpine:init', () => {
     
     Alpine.data('posts', () => ({
         locale: 'uk',
-        currentFilter: PostStatus.NEED_SUMMARY,
+        currentFilter: null, //PostStatus.NEED_SUMMARY,
         posts: [],
         
         initData: async function () {
@@ -84,21 +84,6 @@ document.addEventListener('alpine:init', () => {
             }
         },
 
-        preparePosts: async function() {
-            try {
-                const response = await fetch('/api/needsummary');
-                const data = await response.json();
-                
-                if (data.status === 'success') {
-                    console.log('Оброблено постів:', data.processed);
-                    await this.initData(); // Оновлюємо дані після обробки
-                } else {
-                    throw new Error('Помилка при обробці постів');
-                }
-            } catch (error) {
-                console.error('Помилка:', error.message);
-            }
-        },
 
         markAsReady: async function(id) {
             try {
@@ -113,6 +98,22 @@ document.addEventListener('alpine:init', () => {
                 this.posts = this.posts.filter(post => post.id !== id);
             } catch (error) {
                 console.error('Помилка при позначенні поста як готового:', error.message);
+            }
+        },
+
+        restoreFromArchive: async function(id) {
+            try {
+                const {error} = await supabase
+                    .from('posts')
+                    .update({status: PostStatus.NOT_REVIEWED})
+                    .eq('id', id);
+                    
+                if (error) throw error;
+                
+                // Видаляємо пост з поточного списку відображення
+                this.posts = this.posts.filter(post => post.id !== id);
+            } catch (error) {
+                console.error('Помилка при відновленні поста з архіву:', error.message);
             }
         },
 
@@ -151,6 +152,48 @@ document.addEventListener('alpine:init', () => {
                 console.error('Помилка оновлення дати події:', error.message);
             }
         },
+
+        parseSources: async function() {
+            try {
+                const response = await fetch('/api/scan');
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    console.log('Джерела проскановано:', data.message);
+                    await this.initData(); // Оновлюємо дані після сканування
+                } else {
+                    throw new Error(data.message || 'Помилка при скануванні джерел');
+                }
+            } catch (error) {
+                console.error('Помилка:', error.message);
+            }
+        },
+
+        getSummaries: async function() {
+            try {
+                const response = await fetch('/api/getsummaries');
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    console.log('Оброблено постів:', data.processed);
+                    await this.initData(); // Оновлюємо дані після обробки
+                } else {
+                    throw new Error('Помилка при обробці постів');
+                }
+            } catch (error) {
+                console.error('Помилка:', error.message);
+            }
+        },
+
+        publishDigests: async function() {
+            try {
+                const response = await fetch('/api/publishdigests');
+                const data = await response.json();
+            } catch (error) {
+                console.error('Помилка:', error.message);
+            }
+        },
+
 
         init() {
             this.$watch('currentFilter', () => {

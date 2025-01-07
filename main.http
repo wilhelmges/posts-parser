@@ -1,4 +1,0 @@
-### GET request with a header
-GET     https://mvmqtypenwwxlpqijdov.supabase.co/rest/v1/categories?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im12bXF0eXBlbnd3eGxwcWlqZG92Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDY4Nzc0MjIsImV4cCI6MjAyMjQ1MzQyMn0.-uNhcvbMx6Ge5NzdEqzjJPj_Lb_5H5BvmmpEi5ujI9o
-Accept: application/json
-
