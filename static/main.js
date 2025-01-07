@@ -83,6 +83,23 @@ document.addEventListener('alpine:init', () => {
                 console.error('Помилка при оновленні статусу:', error.message);
             }
         },
+
+        preparePosts: async function() {
+            try {
+                const response = await fetch('/api/needsummary');
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    console.log('Оброблено постів:', data.processed);
+                    await this.initData(); // Оновлюємо дані після обробки
+                } else {
+                    throw new Error('Помилка при обробці постів');
+                }
+            } catch (error) {
+                console.error('Помилка:', error.message);
+            }
+        },
+
         markAsReady: async function(id) {
             try {
                 const {error} = await supabase

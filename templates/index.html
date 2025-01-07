@@ -8,7 +8,7 @@
     <title>Панель керування постами</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="static/styles.css">
 </head>
 
 <body>
@@ -23,14 +23,31 @@
                     <div class="control">
                         <div class="select">
                             <select x-model="currentFilter" 
-                            x-model="currentFilter"
                             @change="initData()">
-                                <option >Виберіть, що ви бажаєте переглянути</option>
+                                <option>Виберіть, що ви бажаєте переглянути</option>
                                 <option :value="PostStatus.NOT_REVIEWED">Непереглянуті</option>
                                 <option :value="PostStatus.READYTOPOST">Готові до публікації</option>
                                 <option :value="PostStatus.NEED_SUMMARY">Потребують опису</option>
                                 <option :value="PostStatus.ARCHIVED">Архівовані</option>
                             </select>
+                        </div>
+                    </div>
+                    
+                    <div class="field is-grouped">
+                        <div class="control">
+                            <button class="button is-info" x-on:click="parseSources()">
+                                <span>Просканувати джерела</span>
+                            </button>
+                        </div>
+                        <div class="control">
+                            <button class="button is-info" x-on:click="preparePosts()">
+                                <span>Підготувати публікації</span>
+                            </button>
+                        </div>
+                        <div class="control">
+                            <button class="button is-info" x-on:click="publishDigest()">
+                                <span>Опублікувати дайждест</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -122,7 +139,7 @@
 
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <script src="main.js"></script>
+    <script src="static/main.js"></script>
     <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" defer></script>
 </body>
 </html>

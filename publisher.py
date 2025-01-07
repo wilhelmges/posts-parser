@@ -8,6 +8,7 @@ api_id = 14535551; api_hash = 'ee049ec9130de53ec5336fe819e49365' # app1
 def prepare_posts(topic='dance'):
     current = datetime.date.today()
     responce = supabase.table('posts').select("fulltext, id, created_at, source_slug").eq('status','needsummary').eq('category',topic).order('created_at', desc=True).limit(15).execute().data #.is_('brief', 'null')
+    processed = 0
     for repost in responce:
         text = repost['fulltext']
         # print(repost['created_at'], text[:40])
@@ -18,8 +19,11 @@ def prepare_posts(topic='dance'):
             brief = create_brief_for_event(text)
             print(brief,)
             data, count = supabase.table('posts').update({'event_date': date, 'brief':brief}).eq('id', repost['id']).execute()
+            processed += 1
         except Exception as e:
             print(str(e))
+    
+    return processed
 
 def publish_dance_parties():
     locale.setlocale(locale.LC_TIME, 'uk_UA.UTF-8')

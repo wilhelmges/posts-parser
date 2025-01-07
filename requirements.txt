@@ -1,5 +1,6 @@
 supabase
 python-dotenv
 openai
+flask
 ensta==5.2.5
 moviepy==1.0.3
