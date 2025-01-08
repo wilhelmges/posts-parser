@@ -7,43 +7,9 @@
     
     <title>Панель керування постами</title>
     
+    <link rel="icon" type="image/x-icon" href="static/favicon.ico">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
     <link rel="stylesheet" href="static/styles.css">
-    <style>
-        @media screen and (max-width: 768px) {
-            .container {
-                padding: 1rem !important;
-            }
-            
-            .columns {
-                margin: 0;
-            }
-            
-            .column {
-                padding: 0.5rem;
-            }
-            
-            .field.is-grouped {
-                flex-wrap: wrap;
-                gap: 0.5rem;
-            }
-            
-            .button-group {
-                display: flex;
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-            
-            .button {
-                width: 100%;
-                margin: 0 !important;
-            }
-            
-            .textarea {
-                min-height: 120px;
-            }
-        }
-    </style>
 </head>
 
 <body>
@@ -125,35 +91,34 @@
                             <button 
                                 class="button is-info" 
                                 x-show="currentFilter === PostStatus.NOT_REVIEWED"
-                                x-on:click="markAsNeedSummary(post.id)"
+                                @click="markAsNeedSummary(post.id)"
                             >
-                                <span>для цього анонсу потрібно резюме (NEED_SUMMARY)</span>
+                                Потрібно резюме
                             </button>
                             
                             <button 
                                 class="button is-success" 
                                 x-show="post.brief?.trim() && post.event_date && PostStatus.NEED_SUMMARY"
-                                x-on:click="markAsReady(post.id)"
+                                @click="markAsReady(post.id)"
                             >
-                                <span>Готово до публікації (READYTOPOST)</span>
+                                Готово до публікації
                             </button>
                             
                             <button 
                                 class="button is-warning" 
-                                x-on:click="markPostAsArchived(post.id)"
-                                x-show="post.status!==PostStatus.ARCHIVED"
+                                @click="markPostAsArchived(post.id)"
+                                x-show="post.status !== PostStatus.ARCHIVED"
                             >
-                                <span class="icon">
-                                    <i class="fas fa-archive"></i>
-                                </span>
-                                <span>Архівувати (ARCHIVED)</span>
-                                
+                                <span class="icon"><i class="fas fa-archive"></i></span>
+                                Архівувати
                             </button>
 
                             <button
                                 class="button is-warning"
                                 x-show="post.status === PostStatus.ARCHIVED"
-                                <span>Відновити з архіву (NOT_REVIEWED)</span>
+                                @click="markAsNotReviewed(post.id)"
+                            >
+                                Відновити з архіву
                             </button>    
                         </div>
 

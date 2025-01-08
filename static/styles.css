@@ -29,12 +29,21 @@ textarea {
 
 /* Медіа-запит для мобільних пристроїв */
 @media screen and (max-width: 768px) {
-    .container { padding: 1rem !important; }
-    .columns { margin: 0; }
-    .column { padding: 0.5rem; }
+    .container { 
+        padding: 1rem !important; 
+    }
+    
+    .columns { 
+        margin: 0; 
+    }
+    
+    .column { 
+        padding: 0.5rem; 
+    }
     
     /* Перебудова кнопок для мобільного відображення */
-    .button-group {
+    .button-group,
+    .field.is-grouped {
         flex-direction: column;
     }
     
