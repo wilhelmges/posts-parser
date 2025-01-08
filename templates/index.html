@@ -75,13 +75,11 @@
                 <div class="field is-grouped mb-4">
                     <div class="control">
                         <div class="select">
-                            <select x-model="currentFilter" 
-                            @change="updateUrlAndData">
-                                <option>Виберіть, що ви бажаєте переглянути</option>
-                                <option :value="PostStatus.NOT_REVIEWED">Непереглянуті</option>
-                                <option :value="PostStatus.READYTOPOST">Готові до публікації</option>
-                                <option :value="PostStatus.NEED_SUMMARY">Потребують опису</option>
-                                <option :value="PostStatus.ARCHIVED">Архівовані</option>
+                            <select x-model="currentFilter">
+                                <option :value="PostStatus.NOT_REVIEWED" :selected="currentFilter === PostStatus.NOT_REVIEWED">Непереглянуті</option>
+                                <option :value="PostStatus.READYTOPOST" :selected="currentFilter === PostStatus.READYTOPOST">Готові до публікації</option>
+                                <option :value="PostStatus.NEED_SUMMARY" :selected="currentFilter === PostStatus.NEED_SUMMARY">Потребують опису</option>
+                                <option :value="PostStatus.ARCHIVED" :selected="currentFilter === PostStatus.ARCHIVED">Архівовані</option>
                             </select>
                         </div>
                     </div>

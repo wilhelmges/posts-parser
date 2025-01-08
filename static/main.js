@@ -211,9 +211,17 @@ document.addEventListener('alpine:init', () => {
         },
 
         init() {
-            this.initDataFromUrl();
+            const params = new URLSearchParams(window.location.search);
+            const status = params.get('status');
+            if (status) {
+                this.currentFilter = status;
+            } else {
+                this.currentFilter = PostStatus.NOT_REVIEWED; // значення за замовчуванням
+            }
+            this.initData();
+            
             this.$watch('currentFilter', () => {
-                this.initData();
+                this.updateUrlAndData();
             });
         }
     }))

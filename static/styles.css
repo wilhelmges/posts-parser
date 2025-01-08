@@ -1,10 +1,12 @@
+/* Базові стилі для текстової області */
 textarea {
     width: 100%;
-    box-sizing: border-box;
-    resize: vertical;
     min-height: 100px;
+    resize: vertical;
+    box-sizing: border-box;
 }
 
+/* Контейнер для постів */
 .post-container {
     margin-bottom: 1.5rem;
     padding: 1rem;
@@ -12,6 +14,7 @@ textarea {
     border-radius: 4px;
 }
 
+/* Метадані посту та групи кнопок */
 .post-meta {
     font-size: 0.9rem;
     color: #666;
@@ -22,4 +25,21 @@ textarea {
     margin-top: 0.5rem;
     display: flex;
     gap: 0.5rem;
+}
+
+/* Медіа-запит для мобільних пристроїв */
+@media screen and (max-width: 768px) {
+    .container { padding: 1rem !important; }
+    .columns { margin: 0; }
+    .column { padding: 0.5rem; }
+    
+    /* Перебудова кнопок для мобільного відображення */
+    .button-group {
+        flex-direction: column;
+    }
+    
+    .button {
+        width: 100%;
+        margin: 0 !important;
+    }
 } 
