@@ -13,7 +13,7 @@ document.addEventListener('alpine:init', () => {
     
     Alpine.data('posts', () => ({
         locale: 'uk',
-        currentFilter: null, //PostStatus.NEED_SUMMARY,
+        currentFilter: PostStatus.NOT_REVIEWED,
         posts: [],
         
         initData: async function () {
@@ -194,8 +194,24 @@ document.addEventListener('alpine:init', () => {
             }
         },
 
+        updateUrlAndData() {
+            const url = new URL(window.location);
+            url.searchParams.set('status', this.currentFilter);
+            window.history.pushState({}, '', url);
+            this.initData();
+        },
+
+        initDataFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            const status = params.get('status');
+            if (status) {
+                this.currentFilter = status;
+            }
+            this.initData();
+        },
 
         init() {
+            this.initDataFromUrl();
             this.$watch('currentFilter', () => {
                 this.initData();
             });

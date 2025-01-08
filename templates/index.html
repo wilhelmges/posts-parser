@@ -12,7 +12,7 @@
 </head>
 
 <body>
-    <main class="container p-4" x-data="posts" x-init="initData">
+    <main class="container p-4" x-data="posts" x-init="initDataFromUrl">
         <div class="columns">
             <div class="column">
                 <h1 class="title">
@@ -23,7 +23,7 @@
                     <div class="control">
                         <div class="select">
                             <select x-model="currentFilter" 
-                            @change="initData()">
+                            @change="updateUrlAndData">
                                 <option>Виберіть, що ви бажаєте переглянути</option>
                                 <option :value="PostStatus.NOT_REVIEWED">Непереглянуті</option>
                                 <option :value="PostStatus.READYTOPOST">Готові до публікації</option>
