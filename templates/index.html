@@ -9,6 +9,41 @@
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
     <link rel="stylesheet" href="static/styles.css">
+    <style>
+        @media screen and (max-width: 768px) {
+            .container {
+                padding: 1rem !important;
+            }
+            
+            .columns {
+                margin: 0;
+            }
+            
+            .column {
+                padding: 0.5rem;
+            }
+            
+            .field.is-grouped {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            
+            .button-group {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .button {
+                width: 100%;
+                margin: 0 !important;
+            }
+            
+            .textarea {
+                min-height: 120px;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -18,6 +53,24 @@
                 <h1 class="title">
                     Панель керування постами
                 </h1>
+
+                <div class="field is-grouped mb-4">
+                    <div class="control">
+                        <button class="button is-info" x-on:click="parseSources()">
+                            <span>Просканувати</span>
+                        </button>
+                    </div>
+                    <div class="control">
+                        <button class="button is-info" x-on:click="getSummaries()">
+                            <span>Підготувати саммері</span>
+                        </button>
+                    </div>
+                    <div class="control">
+                        <button class="button is-info" x-on:click="publishDigests()">
+                            <span>Опублікувати</span>
+                        </button>
+                    </div>
+                </div>
 
                 <div class="field is-grouped mb-4">
                     <div class="control">
@@ -32,30 +85,12 @@
                             </select>
                         </div>
                     </div>
-                    
-                    <div class="field is-grouped">
-                        <div class="control">
-                            <button class="button is-info" x-on:click="parseSources()">
-                                <span>Просканувати джерела</span>
-                            </button>
-                        </div>
-                        <div class="control">
-                            <button class="button is-info" x-on:click="getSummaries()">
-                                <span>Підготувати саммері для анонсів</span>
-                            </button>
-                        </div>
-                        <div class="control">
-                            <button class="button is-info" x-on:click="publishDigests()">
-                                <span>Опублікувати дайждести</span>
-                            </button>
-                        </div>
-                    </div>
                 </div>
 
                 <template x-for="post in posts" :key="post.id">
                     <div class="post-container">
-                        <div class="columns">
-                            <div class="column is-7">
+                        <div class="columns is-mobile m-0">
+                            <div class="column is-half-mobile is-7-tablet p-1">
                                 <textarea 
                                     class="textarea" 
                                     rows="9" 
@@ -63,7 +98,7 @@
                                     @input="updatePost(post.id, $event.target.value)"
                                 ></textarea>
                             </div>
-                            <div class="column is-4">
+                            <div class="column is-half-mobile is-4-tablet p-1">
                                 <textarea 
                                     class="textarea" 
                                     rows="9" 
