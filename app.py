@@ -135,4 +135,4 @@ async def hello_world():
     return 'Hello from Quart!'
 
 if __name__ == '__main__':
-    app.run(debug=True) 
+    app.run() 
