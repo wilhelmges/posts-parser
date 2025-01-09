@@ -3,6 +3,7 @@ from quart_cors import cors
 from telethon import TelegramClient, events
 import os
 from dotenv import load_dotenv
+from post_processor import calculate_event_possibility
 from repository import supabase
 import datetime
 from publisher import prepare_posts
@@ -25,6 +26,7 @@ async def index():
 
 @app.route('/api/scan')
 async def scan_sources():
+    POST_LIMIT = 5
     """Ендпоінт для сканування джерел контенту"""
     try:
         # Додати визначення category
@@ -34,40 +36,46 @@ async def scan_sources():
             await client.connect()
             
         current_date =(datetime.date.today())
-        kyivdancesources = supabase.table('sources').select("id, slug, topic, city").eq('media', 'telega').eq('category',category).limit(20).execute().data
+        kyivdancesources = supabase.table('sources').select("id, slug,media, topic, city").eq('media', 'telega').eq('category',category).limit(3).execute().data
         added = 0
+        possibilities = []
         for source in kyivdancesources:
             print(source['slug'])
 
             if source['topic']:
-                messages = await client.get_messages(source['slug'], reply_to=source['topic'], limit=10)
+                messages = await client.get_messages(source['slug'], reply_to=source['topic'], limit=POST_LIMIT)
             else:
-                messages = await client.get_messages(source['slug'], limit=10)
-
+                messages = await client.get_messages(source['slug'], limit=POST_LIMIT)
 
             for message in messages:
                 if message.text:
                     #print(dir(message)); exit()
                     text = (message.message).replace("\n", ". ")
                     post_date= (message.date).date()
-                    if (current_date - post_date).days>5:
+                   
+                    if (current_date - post_date).days>6:
                         break
-                    post_to_save = {"fulltext": text, "source_slug": source['slug'], "category": category, "created_at": str(message.date),"city":source['city'], 'status': 'notreviewed', "post_id": message.id}
-                    print(text)
+                    if len(text)<10:
+                        continue
+                    _hash = hash((message.id, message.chat_id))
+                    possibility = calculate_event_possibility(text)
+                    
+                    post_to_save = {"fulltext": text, "source_slug": source['slug']+':'+source['media'], "category": category,"city":source['city'], 'status': 'notreviewed', "id": _hash, "possibility": possibility}
+                    print(possibility, text[:40])
                     try: 
                         supabase.table('posts').insert(post_to_save).execute()
                         added += 1
                     except Exception as e:
                         print(f"Помилка при збереженні посту: {e}")
-                        break
+                        continue
 
         return jsonify({
             "status": "success",
-            "added": added
+            "added": added,
         })
         
     except Exception as e:
-        print(f"Детальна помилка: {e}")  # додати для кращого логування
+        print(f"Детальна помилка: {str(e)}")  # додати для кращого логування
         return jsonify({
             "status": "error",
             "message": f"error: {str(e)}"
@@ -135,4 +143,4 @@ async def hello_world():
     return 'Hello from Quart!'
 
 if __name__ == '__main__':
-    app.run() 
+    app.run(debug=(True if os.getenv('USER')=='rasser' else False)) 

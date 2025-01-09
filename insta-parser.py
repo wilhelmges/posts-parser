@@ -3,12 +3,13 @@ import datetime, time
 from repository import supabase #, get_sources, findPost, addPost
 from random import randint
 import re as regulars
+from post_processor import calculate_event_possibility
 
 # account = 'younglionrasmus' ; password='Fgzpz3XGQ8ZKvh2'
 # shimabukurocoder Publ1cPassw0rd
 instaClient = InstaClient('younglionrasmus', 'Fgzpz3XGQ8ZKvh2')
 
-def getposts(category='church'):
+def getposts(category='dance'):
     current_date = (datetime.date.today())
     sources = supabase.table('sources').select("id, slug, category").eq('media','insta').eq('category',category).execute().data
     for source in sources:  # host.followings(account, count=0):  # users we are watching. Want full list? Set count to '0'
@@ -32,15 +33,16 @@ def getposts(category='church'):
             post_date = datetime.datetime.fromtimestamp(post.caption_created_at).date() # post.caption_created_at  1706391694, post.caption_created_at вроде соответсвует дате последнего редактирования
             if text:
                 if (current_date - post_date).days>14:
-                    continue
+                    break
+                possibility = calculate_event_possibility(text)
                 # print(post.post_id, post.code,post_date, text[:30]); exit()
-                post_to_save = {"source_slug": slug, "fulltext": text, "category": category, "created_at": str(post_date), 'status':'notreviewed', "post_id":post.post_id,"url_slug": post.code}
+                post_to_save = {"source_slug": slug, "fulltext": text, "category": category, "created_at": str(post_date), 'status':'notreviewed', "post_id":post.post_id,"url_slug": post.code, "possibility": possibility}
                 try:
                     supabase.table('posts').insert(post_to_save).execute()
                 except Exception as e:
                     print('maybe exist', e, str(e), dir(e), type(e))
                     continue
-            time.sleep(randint(70,140))
+            time.sleep(randint(90,190))
 
         #supabase.table('sources').update({'scanned': str(current_date)}).eq('id', user['id']).execute() ;         time.sleep(randint(10,55))
         print('-------------')
@@ -65,7 +67,7 @@ def iterate_insta_sources(category='culture'):
 
 if __name__ == '__main__':
     pass
-    getposts('dance')
+    getposts('tusa')
 
     #iterate_insta_sources('church')
     # grab_insta_profile_lastposts('alfa.church', instaClient, 3)

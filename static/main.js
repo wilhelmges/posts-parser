@@ -24,6 +24,7 @@ document.addEventListener('alpine:init', () => {
                     .eq('status', this.currentFilter)
                     .eq('category', 'dance')
                     .limit(25)
+                    .order('possibility', { ascending: false })
                     .order('created_at', { ascending: false });
                 
                 if (error) throw error;

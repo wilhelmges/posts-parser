@@ -44,6 +44,19 @@ def create_brief_for_event(text: str)->str:
     )
     return response.choices[0].message.content
 
+def calculate_event_possibility(text: str)->str:
+    content = 'переглянь публікацію і розрахуй числову вірогідність того, що ця публікація є анонсом офлайн події. вкажи вірогідність як результат. вірогідність має бути виражена від 0 до 100. включи у відповідь виключно цифри, нічого зайвого. не треба пояснень, лише числове значення :'+text
+    response = client.chat.completions.create(
+        messages=[
+            {
+                "role": "user",
+                "content": content,
+            }
+        ],
+        model="gpt-3.5-turbo",
+    )
+    return int(response.choices[0].message.content)
+
 if __name__=='__main__':
     text = '''
 One love - то три зали на 600 м2, в цю неділю танцюємо в Nivki Hall 🤩
@@ -63,5 +76,4 @@ One love - то три зали на 600 м2, в цю неділю танцює�
 
 Вриваємося в цей вечір 😍
     '''
-    # print(refine('18.02'))
-    print(find_date_for_danceparty(text))
+    print(calculate_event_possibility(text))

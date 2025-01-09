@@ -7,6 +7,15 @@ import re
 api_id = 14535551 #app1
 api_hash = 'ee049ec9130de53ec5336fe819e49365'
 
+
+def test_scan():
+    messages = parse_channel('vilyashko', 'https://t.me/test_channel7557', 10);
+    for message in messages:
+        print(message.id, message.chat_id); 
+        print(hash((message.id, message.chat_id)))
+        
+        exit()
+
 def collect_posts(category="dance"):
     current_date =(datetime.date.today())
     kyivdancesources = supabase.table('sources').select("id, slug, topic, city").eq('media', 'telega').eq('category',category).limit(20).execute().data
@@ -18,7 +27,8 @@ def collect_posts(category="dance"):
         else:
             messages = parse_channel('vilyashko', source['slug'], 10)
 
-
+        messages = parse_channel('vilyashko', 'https://t.me/test_channel7557', 10); print(message.id); 
+        
         for message in messages:
             if message.text:
                 #print(dir(message)); exit()
@@ -40,7 +50,8 @@ def collect_posts(category="dance"):
 
 
 if __name__ == "__main__":
-    collect_posts("dance")
+    #collect_posts("dance")
+    test_scan()
 
 def test():
     rez = parse_channel('alxwebdev', '', 20)  # 1442754450
