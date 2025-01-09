@@ -1,6 +1,8 @@
 from openai import OpenAI
 from datetime import datetime
 import os; from dotenv import load_dotenv; load_dotenv()
+import re 
+
 
 client = OpenAI(api_key=os.getenv("OPENAPI"))
 
@@ -55,7 +57,13 @@ def calculate_event_possibility(text: str)->str:
         ],
         model="gpt-3.5-turbo",
     )
-    return int(response.choices[0].message.content)
+
+    try: 
+        rez = int(eval(response.choices[0].message.content))
+    except Exception as e:
+        print(f"Помилка при розрахунку вірогідності: {e}")
+        rez = 0
+    return rez
 
 if __name__=='__main__':
     text = '''

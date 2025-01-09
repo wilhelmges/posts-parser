@@ -16,16 +16,26 @@ document.addEventListener('alpine:init', () => {
         currentFilter: PostStatus.NOT_REVIEWED,
         posts: [],
         
-        initData: async function () {
+        initData: async function () {                
+            _supabase = supabase
+            .from('posts')
+            .select('id, fulltext, brief, source_slug, event_date')
+            .eq('status', this.currentFilter)
+            .eq('category', 'dance')
+            .limit(25)
+            .order('possibility', { ascending: false })
+
+            if (this.currentFilter === PostStatus.READYTOPOST){
+                _supabase = supabase
+                .from('posts')
+                .select('id, fulltext, brief, source_slug, event_date')
+                .eq('status', this.currentFilter)
+                .eq('category', 'dance')
+                .limit(25)
+                .order('event_date', { ascending: true })
+            }
             try {
-                const {data, error} = await supabase
-                    .from('posts')
-                    .select('id, fulltext, brief, source_slug, event_date')
-                    .eq('status', this.currentFilter)
-                    .eq('category', 'dance')
-                    .limit(25)
-                    .order('possibility', { ascending: false })
-                    .order('created_at', { ascending: false });
+                const {data, error} = await _supabase
                 
                 if (error) throw error;
                 this.posts = data;

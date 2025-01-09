@@ -26,7 +26,7 @@ async def index():
 
 @app.route('/api/scan')
 async def scan_sources():
-    POST_LIMIT = 5
+    POST_LIMIT = 10
     """Ендпоінт для сканування джерел контенту"""
     try:
         # Додати визначення category
@@ -36,7 +36,7 @@ async def scan_sources():
             await client.connect()
             
         current_date =(datetime.date.today())
-        kyivdancesources = supabase.table('sources').select("id, slug,media, topic, city").eq('media', 'telega').eq('category',category).limit(3).execute().data
+        kyivdancesources = supabase.table('sources').select("id, slug,media, topic, city").eq('media', 'telega').eq('category',category).limit(20).execute().data
         added = 0
         possibilities = []
         for source in kyivdancesources:
@@ -60,7 +60,7 @@ async def scan_sources():
                     _hash = hash((message.id, message.chat_id))
                     possibility = calculate_event_possibility(text)
                     
-                    post_to_save = {"fulltext": text, "source_slug": source['slug']+':'+source['media'], "category": category,"city":source['city'], 'status': 'notreviewed', "id": _hash, "possibility": possibility}
+                    post_to_save = {"fulltext": text, "source_slug": source['slug']+':'+source['media'], "category": category,"city":source['city'], 'status': 'notreviewed', "hash": _hash, "possibility": possibility}
                     print(possibility, text[:40])
                     try: 
                         supabase.table('posts').insert(post_to_save).execute()
