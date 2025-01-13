@@ -88,38 +88,42 @@
                         </div>
                         
                         <div class="button-group">
-                            <button 
-                                class="button is-info" 
-                                x-show="currentFilter === PostStatus.NOT_REVIEWED"
-                                @click="markAsNeedSummary(post.id)"
-                            >
-                                Потрібно саммері
-                            </button>
-                            
-                            <button 
-                                class="button is-success" 
-                                x-show="post.brief?.trim() && post.event_date && PostStatus.NEED_SUMMARY"
-                                @click="markAsReady(post.id)"
-                            >
-                                Готово до публікації
-                            </button>
-                            
-                            <button 
-                                class="button is-warning" 
-                                @click="markPostAsArchived(post.id)"
-                                x-show="post.status !== PostStatus.ARCHIVED"
-                            >
-                                <span class="icon"><i class="fas fa-archive"></i></span>
-                                Архівувати
-                            </button>
+                            <div class="buttons is-flex is-flex-wrap-wrap gap-2">
+                                <button 
+                                    class="button is-info" 
+                                    x-show="currentFilter === PostStatus.NOT_REVIEWED"
+                                    @click="markAsNeedSummary(post.id)"
+                                >
+                                    <span class="icon"><i class="fas fa-pen-fancy"></i></span>
+                                    <span>Потрібно саммері</span>
+                                </button>
+                                
+                                <button 
+                                    class="button is-success" 
+                                    x-show="post.brief?.trim() && post.event_date && PostStatus.NEED_SUMMARY"
+                                    @click="markAsReady(post.id)"
+                                >
+                                    <span class="icon"><i class="fas fa-check"></i></span>
+                                    <span>Готово до публікації</span>
+                                </button>
+                                
+                                <button 
+                                    class="button is-warning" 
+                                    @click="markPostAsArchived(post.id)"
+                                    x-show="post.status !== PostStatus.ARCHIVED"
+                                >
+                                    <span class="icon"><i class="fas fa-archive"></i></span>
+                                     Архівувати
+                                </button>
 
-                            <button
-                                class="button is-warning"
-                                x-show="post.status === PostStatus.ARCHIVED"
-                                @click="markAsNotReviewed(post.id)"
-                            >
-                                Відновити з архіву
-                            </button>    
+                                <button
+                                    class="button is-warning"
+                                    x-show="post.status === PostStatus.ARCHIVED"
+                                    @click="markAsNotReviewed(post.id)"
+                                >
+                                    Відновити з архіву
+                                </button>    
+                            </div>
                         </div>
 
                         <div class="post-meta">

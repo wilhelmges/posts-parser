@@ -8,3 +8,4 @@ ensta==5.2.5
 moviepy==1.0.3
 hypercorn
 werkzeug
+Pillow>=10.0.0

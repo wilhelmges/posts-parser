@@ -10,8 +10,12 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@supabase/supabase-js": "^2.47.12",
+    "cheerio": "^1.0.0",
+    "dotenv": "^16.4.7",
     "puppeteer": "^23.11.1",
     "puppeteer-extra": "^3.3.6",
-    "puppeteer-extra-plugin-stealth": "^2.11.2"
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "supabase": "^2.2.1"
   }
 }
