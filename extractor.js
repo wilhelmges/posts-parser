@@ -1,14 +1,14 @@
 import { readFile } from 'fs/promises';
 import * as cheerio from 'cheerio';
 
-// Шлях до HTML-файлу
-const filePath = './saved/lcd.html';
-
-try {
-    const html = await readFile(filePath, 'utf8');// Зчитуємо HTML-файл
-    iter_posts(html)
-} catch (error) {
-    console.error('Помилка:', error);
+if (import.meta.url === `file://${process.argv[1]}`) {
+    const filePath = './tmp/lcd.html';// Шлях до HTML-файлу
+    try {
+        const html = await readFile(filePath, 'utf8');// Зчитуємо HTML-файл
+        iter_posts(html)
+    } catch (error) {
+        console.error('Помилка:', error);
+    }
 }
 
 export default function iter_posts(html) {

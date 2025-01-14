@@ -38,7 +38,7 @@ const maxPosts = 6;
 
         try {
             // Перехід на сторінку Instagram
-            const url =`https://www.instagram.com/${username}` //'https://dou.ua/calendar/city/Kyiv/'
+            const url = 'https://megogo.net/' // `https://www.instagram.com/${username}`
             console.log('Перехід на сторінку Instagram');
             await page.goto(url, {
                 waitUntil: 'networkidle0'
