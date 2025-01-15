@@ -3,7 +3,7 @@ export function getRandomElement(arr) {
     const randomIndex = Math.floor(Math.random() * arr.length);
     return arr[randomIndex];
 }
-export function sleep(ms) {return new Promise(resolve => setTimeout(resolve, ms));}
+export function sleep(ms1, ms2) {return new Promise(resolve => setTimeout(resolve, ms1+ms2*Math.random()));}
 
 export const puppeteerArguments = [
     '--no-sandbox',

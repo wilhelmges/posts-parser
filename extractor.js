@@ -27,7 +27,7 @@ export default function iter_posts(html) {
         const text = $(cover).text()
 
         if (text.length>5){
-            posts.push({[links[index]]:text})
+            posts.push({'slug':links[index],'text':text})
             console.log(index, ' ',links[index],' - ',text.slice(0,20));
         }
     })
