@@ -11,7 +11,7 @@ const maxPosts = 6;
 (async () => {
     const city = "Київ"
     const category = "dance"
-    const scrapeInstagramPosts = async (username) => {
+    const scrapeInstagramPosts = async (username, id) => {
 
         console.log(`Processing user: ${username}`);
         // Налаштування браузера
@@ -36,6 +36,7 @@ const maxPosts = 6;
             const html = await page.content();
             //await lib.sleep(1000); //new Promise(resolve => setTimeout(resolve, 1000));
             const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            const datestamp = timestamp.slice(0,10)
             console.log('Створення скріншота');// створення артифактів
             const screenshotPath = `./saved/${username}_${timestamp}.png`;
             await page.screenshot({
@@ -48,7 +49,10 @@ const maxPosts = 6;
             console.log(`HTML-сторінку збережено у файл: ${fileName}`);
 
             const posts = iter_posts(html)
-            if (posts.length===0) throw new Error('no posts found')
+            if (posts.length===0){
+                console.log('no posts found for '+username)
+                process.exit()
+            }
 
             let records = []
             for (let post of posts) {
@@ -56,15 +60,17 @@ const maxPosts = 6;
                         .from('posts')
                         .select('id, url_slug')
                         .eq('url_slug', post.slug)
+
                     if (data.length === 0) {
                         let p= await calculateTextAnAnnouncementPossibility(post.text)
                         console.log(p, post.text.slice(0, 22))
                         records.push({category: category, city: city, fulltext: post.text, url_slug: post.slug
-                            , 'possibility': p})
+                            , 'possibility': p,'source_slug':username, 'media': 'insta'})
                     }
             }
             console.log("we've founded new posts: "+records.length)
             const {data, error} = await supabaseClient.from('posts').insert(records)
+            await supabaseClient.from('sources').update({'last_scraped':datestamp}).match({'id':id})
             console.log(error)
 
         } catch (error) {
@@ -77,14 +83,15 @@ const maxPosts = 6;
 
     const {data, error} = await supabaseClient
         .from('sources')
-        .select('slug')
+        .select('id, slug')
         .eq('media', 'insta')
         .eq('category', category)
         .eq('city', city)
+        .order('last_scraped',{ascending: true})
 
     console.log(data, error)
     for (let user of data){
-        await scrapeInstagramPosts(user.slug);
+        await scrapeInstagramPosts(user.slug, user.id);
         await lib.sleep(3000, 2000)
     }
 

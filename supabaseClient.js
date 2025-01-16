@@ -11,13 +11,20 @@ const supabaseClient = createClient(supabaseUrl, supabaseKey)
 export default supabaseClient
 
 if (import.meta.url === `file://${process.argv[1]}`) {
-    {
-        const {data, error } = await supabaseClient
-            .from('posts')
-            .select('id, url_slug')
-            .eq('url_slug', 'DEkCUwqtM2q')
-        console.log(data.length)
-    }
+
+    // const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    // const t2 = timestamp.slice(0,10)
+    // console.log(t2)
+    // const {data, error} = await supabaseClient.from('sources').update({'last_scraped':t2}).match({'id':61})
+    // console.log(error)
+
+
+    // const {data, error } = await supabaseClient
+        //     .from('posts')
+        //     .select('id, url_slug')
+        //     .eq('url_slug', 'DEkCUwqtM2q')
+        // console.log(data.length)
+
     // {
     //     const {data, error } = await supabaseClient
     //         .from('sources')
