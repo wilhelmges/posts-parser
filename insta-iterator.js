@@ -9,7 +9,7 @@ const usernames = ['salsahubkyiv'] //[,'salsabo_dance','salsaclubrivne']
 const maxPosts = 6;
 
 (async () => {
-    const city = "Київ"
+    const city = "Львів"
     const category = "dance"
     const scrapeInstagramPosts = async (username, id) => {
 
@@ -70,7 +70,7 @@ const maxPosts = 6;
             }
             console.log("we've founded new posts: "+records.length)
             const {data, error} = await supabaseClient.from('posts').insert(records)
-            await supabaseClient.from('sources').update({'last_scraped':datestamp}).match({'id':id})
+            await supabaseClient.from('sources').update({'last_scraped':datestamp, 'new_posts': records.length}).match({'id':id})
             console.log(error)
 
         } catch (error) {
@@ -92,12 +92,26 @@ const maxPosts = 6;
     console.log(data, error)
     for (let user of data){
         await scrapeInstagramPosts(user.slug, user.id);
-        await lib.sleep(3000, 2000)
+        await lib.sleep(9000, 8000)
     }
 
 })();
 
 async function preparePuppeteer(page) {
+    // Увімкнення перехоплення запитів
+    await page.setRequestInterception(true);
+
+    // Обробка запитів
+    page.on('request', (request) => {
+        const resourceType = request.resourceType();
+
+        // Відхилення непотрібних ресурсів
+        if (['image', 'stylesheet', 'font'].includes(resourceType)) {
+            request.abort();
+        } else {
+            request.continue();
+        }
+    });
     // Налаштування viewport для мобільної версії
     await page.setViewport({
         ...lib.getRandomElement(lib.androidSides),
