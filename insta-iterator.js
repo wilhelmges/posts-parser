@@ -9,8 +9,8 @@ const usernames = ['salsahubkyiv'] //[,'salsabo_dance','salsaclubrivne']
 const maxPosts = 6;
 
 (async () => {
-    const city = "Львів"
-    const category = "dance"
+    const city = "Київ"
+    const category = "community"
     const scrapeInstagramPosts = async (username, id) => {
 
         console.log(`Processing user: ${username}`);

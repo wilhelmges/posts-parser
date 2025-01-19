@@ -2,19 +2,23 @@ from quart import Quart, render_template, jsonify
 from quart_cors import cors
 from telethon import TelegramClient, events
 import os
-from dotenv import load_dotenv
+
 from post_processor import calculate_event_possibility
 from repository import supabase
 import datetime
 from publisher import prepare_posts
 import time, datetime, locale
-
-load_dotenv()# Завантаження змінних середовища
+from dotenv import load_dotenv; load_dotenv()# Завантаження змінних середовища
 
 # Налаштування Telegram клієнта
-api_id = os.getenv('TELEGRAM_API_ID')
+api_id = int(os.getenv('TELEGRAM_API_ID'))
 api_hash = os.getenv('TELEGRAM_API_HASH')
-client = TelegramClient('vilyashko', api_id, api_hash)
+#client = TelegramClient('vilyashko', api_id, api_hash)
+
+dancedigest_bot_token =  os.getenv('DANCEDIGEST_BOT_TOKEN')  # Use this if you're authenticating as a bot
+client = TelegramClient('bot', api_id, api_hash).start(bot_token=dancedigest_bot_token)
+async def send_message_to_topic(message):
+    await client.send_message("https://t.me/test_tg_api_polytopic", message, reply_to=1)
 
 # Створення Quart додатку
 app = Quart(__name__)
@@ -126,7 +130,9 @@ async def publishdigests():
             if city=="Київ":
                 digest = digest + f"<b> анонси вечірок у Львові, Дніпрі, Одесі, Тернополі, Києві ви можете подивитись в групі https://t.me/opendance_life, також тут можна глянути анонси нових танцювальних наборів і танцювальні фестивалі"
             print(digest)
-            await client.send_message(entity=group, reply_to=topic, message=digest)
+
+            #await client.send_message(entity='https://t.me/test_tg_api_polytopic', reply_to=1, message=digest)
+            #await client.send_message(entity=group, reply_to=topic, message=digest)
 
         return jsonify({
             "status": "success",
@@ -143,4 +149,6 @@ async def hello_world():
     return 'Hello from Quart!'
 
 if __name__ == '__main__':
-    app.run(debug=(True if os.getenv('USER')=='rasser' else False)) 
+    client.loop.run_until_complete(app.run())
+    #client.loop.run_until_complete(app.run(debug=(True if os.getenv('USER')=='rasser' else False)))
+    #app.run(debug=(True if os.getenv('USER')=='rasser' else False))
