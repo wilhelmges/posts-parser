@@ -13,10 +13,10 @@ from dotenv import load_dotenv; load_dotenv()# Завантаження змін
 # Налаштування Telegram клієнта
 api_id = int(os.getenv('TELEGRAM_API_ID'))
 api_hash = os.getenv('TELEGRAM_API_HASH')
-#client = TelegramClient('vilyashko', api_id, api_hash)
+client = TelegramClient('rexwebdev', api_id, api_hash)
 
 dancedigest_bot_token =  os.getenv('DANCEDIGEST_BOT_TOKEN')  # Use this if you're authenticating as a bot
-client = TelegramClient('bot', api_id, api_hash).start(bot_token=dancedigest_bot_token)
+#client = TelegramClient('bot', api_id, api_hash).start(bot_token=dancedigest_bot_token)
 async def send_message_to_topic(message):
     await client.send_message("https://t.me/test_tg_api_polytopic", message, reply_to=1)
 
@@ -107,6 +107,7 @@ async def publishdigests():
     try:
         if not client.is_connected():
             await client.connect()
+
         locale.setlocale(locale.LC_TIME, 'uk_UA.UTF-8')
         current = datetime.date.today()
         response = []
@@ -131,8 +132,8 @@ async def publishdigests():
                 digest = digest + f"<b> анонси вечірок у Львові, Дніпрі, Одесі, Тернополі, Києві ви можете подивитись в групі https://t.me/opendance_life, також тут можна глянути анонси нових танцювальних наборів і танцювальні фестивалі"
             print(digest)
 
-            #await client.send_message(entity='https://t.me/test_tg_api_polytopic', reply_to=1, message=digest)
-            #await client.send_message(entity=group, reply_to=topic, message=digest)
+            await client.send_message(entity='https://t.me/test_tg_api_polytopic', reply_to=1, message=digest)
+            await client.send_message(entity=group, reply_to=topic, message=digest)
 
         return jsonify({
             "status": "success",
