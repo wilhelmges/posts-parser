@@ -1,6 +1,7 @@
 from quart import Quart, render_template, jsonify
 from quart_cors import cors
 from telethon import TelegramClient, events
+from telegram import Bot
 import os
 
 from post_processor import calculate_event_possibility
@@ -13,15 +14,11 @@ from dotenv import load_dotenv; load_dotenv()# Завантаження змін
 # Налаштування Telegram клієнта
 api_id = int(os.getenv('TELEGRAM_API_ID'))
 api_hash = os.getenv('TELEGRAM_API_HASH')
-client = TelegramClient('rexwebdev', api_id, api_hash)
+client = TelegramClient('vilyashko', api_id, api_hash)
+# Use this if you're authenticating as a bot
+bot = Bot(os.getenv('DANCEDIGEST_BOT_TOKEN'))
 
-dancedigest_bot_token =  os.getenv('DANCEDIGEST_BOT_TOKEN')  # Use this if you're authenticating as a bot
-#client = TelegramClient('bot', api_id, api_hash).start(bot_token=dancedigest_bot_token)
-async def send_message_to_topic(message):
-    await client.send_message("https://t.me/test_tg_api_polytopic", message, reply_to=1)
-
-# Створення Quart додатку
-app = Quart(__name__)
+app = Quart(__name__)# Створення Quart додатку
 app = cors(app)
 
 @app.route('/')
@@ -111,7 +108,7 @@ async def publishdigests():
         locale.setlocale(locale.LC_TIME, 'uk_UA.UTF-8')
         current = datetime.date.today()
         response = []
-        group = 'https://t.me/opendance_life'
+        group = '@opendance_life'
         cities = {"Київ":69523, "Дніпро": 75286 , "Львів": 75292, "Одеса": 75294, "Тернопіль":75417} #,
         for city in  cities:
             topic = cities[city]
@@ -129,11 +126,15 @@ async def publishdigests():
                 text = repost['brief'] if repost['brief'] else repost['fulltext']
                 digest = digest + f"<b>{event_date.strftime('%A - %d %B')}</b>\n {text}\n\n"
             if city=="Київ":
-                digest = digest + f"<b> анонси вечірок у Львові, Дніпрі, Одесі, Тернополі, Києві ви можете подивитись в групі https://t.me/opendance_life, також тут можна глянути анонси нових танцювальних наборів і танцювальні фестивалі"
-            print(digest)
+                digest = digest + f"<b> анонси вечірок у Львові, Дніпрі, Одесі, Тернополі</b>, Києві ви можете подивитись в групі https://t.me/opendance_life, також тут можна глянути анонси нових танцювальних наборів і танцювальні фестивалі"
+            print(digest[:20])
 
-            await client.send_message(entity='https://t.me/test_tg_api_polytopic', reply_to=1, message=digest)
-            await client.send_message(entity=group, reply_to=topic, message=digest)
+            try:
+                #await bot.send_message(chat_id='@test_tg_api_polytopic', message_thread_id=1, text='12345')
+                #TODO: need to be fixed for other locations
+                await bot.send_message(chat_id="@opendance_life", message_thread_id=71477, text=digest, parse_mode="HTML")
+            except Exception as e:
+                print(e, str(e))
 
         return jsonify({
             "status": "success",

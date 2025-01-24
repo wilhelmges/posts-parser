@@ -1,16 +1,28 @@
-import os; from dotenv import load_dotenv; load_dotenv()
+from telegram import Bot
+import asyncio
 
-from telethon import TelegramClient
+# Initialize the bot with your token
 
-api_id = int(os.getenv('TELEGRAM_API_ID'))
-api_hash = os.getenv('TELEGRAM_API_HASH')
+text="""
+На сцені музика лунає,
+Танок вогонь у серці має.
+Ноги летять, як крила в птаха,
+Ритм захоплює, душа не стиха.
+"""
+bot = Bot(token="5602757659:AAGO_vOvgfb3p_EwEvNlky4QbeBLNA4oyVo")
 
-dancedigest_bot_token =  os.getenv('DANCEDIGEST_BOT_TOKEN')  # Use this if you're authenticating as a bot
-client = TelegramClient('rexwebdev', api_id, api_hash)
 
-async def send_message_to_topic(message):
+# Chat ID of the group
+chat_id = "@opendance_life" #-2073535024  # Replace with your group's chat ID
 
-    await client.send_message("https://t.me/test_tg_api_polytopic", message, reply_to=1)
+# ID of the topic (thread) within the group
+message_thread_id = 71477  # Replace with the ID of the topic
 
-with client:
-    client.loop.run_until_complete(send_message_to_topic("5 Hello, this is a test message from Telethon!"))
+# Send a message to the specific chat topic
+async def main():
+    await bot.send_message(
+        chat_id=chat_id,text=text,
+        message_thread_id=message_thread_id
+    )
+
+asyncio.run(main())
