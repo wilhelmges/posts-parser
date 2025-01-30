@@ -132,7 +132,7 @@ async def publishdigests():
             try:
                 #await bot.send_message(chat_id='@test_tg_api_polytopic', message_thread_id=1, text='12345')
                 #TODO: need to be fixed for other locations
-                await bot.send_message(chat_id="@opendance_life", message_thread_id=71477, text=digest, parse_mode="HTML")
+                await bot.send_message(chat_id="@opendance_life", message_thread_id=77971, text=digest, parse_mode="HTML")
             except Exception as e:
                 print(e, str(e))
 
