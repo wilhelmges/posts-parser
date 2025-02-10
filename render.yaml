@@ -1,0 +1,9 @@
+services:
+  - name: posts-parser  # Replace with your service name
+    type: web
+    runtime: python  # Ensure your runtime is correctly set
+    envVars:
+      - key: LANG
+        value: "en_US.UTF-8"
+      - key: LC_ALL
+        value: "en_US.UTF-8"
