@@ -3,12 +3,13 @@ from quart_cors import cors
 from telethon import TelegramClient, events
 from telegram import Bot
 import os
+from babel.dates import format_datetime
 
 from post_processor import calculate_event_possibility
 from repository import supabase
 import datetime
 from publisher import prepare_posts
-import time, datetime, locale
+import time, datetime
 from dotenv import load_dotenv; load_dotenv()# Завантаження змінних середовища
 
 # Налаштування Telegram клієнта
@@ -105,7 +106,7 @@ async def publishdigests():
         if not client.is_connected():
             await client.connect()
 
-        locale.setlocale(locale.LC_TIME, 'uk_UA.UTF-8')
+        #locale.setlocale(locale.LC_TIME, 'uk_UA.UTF-8') #uk_UA.UTF-8 unsupported in render.com
         current = datetime.date.today()
         response = []
         group = '@opendance_life'
@@ -123,8 +124,9 @@ async def publishdigests():
             digest = 'дайджест вечірок на тиждень \n\n'
             for repost in response:
                 event_date = datetime.datetime.strptime(repost['event_date'], "%Y-%m-%d")
+                formatted_date = format_datetime(event_date, "EEEE, d MMMM ", locale="uk")
                 text = repost['brief'] if repost['brief'] else repost['fulltext']
-                digest = digest + f"<b>{event_date.strftime('%A - %d %B')}</b>\n {text}\n\n"
+                digest = digest + f"<b>{formatted_date}</b>\n {text}\n\n"
             if city=="Київ":
                 digest = digest + f"<b> анонси вечірок у Львові, Дніпрі, Одесі, Тернополі</b>, Києві ви можете подивитись в групі https://t.me/opendance_life, також тут можна глянути анонси нових танцювальних наборів і танцювальні фестивалі"
             print(digest[:20])

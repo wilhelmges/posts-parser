@@ -10,3 +10,4 @@ hypercorn
 werkzeug
 Pillow>=10.0.0
 python-telegram-bot
+Babel
