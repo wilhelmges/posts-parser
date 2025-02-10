@@ -9,3 +9,4 @@ moviepy==1.0.3
 hypercorn
 werkzeug
 Pillow>=10.0.0
+python-telegram-bot
