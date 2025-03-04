@@ -1,4 +1,5 @@
 supabase
+mistralai
 python-dotenv
 openai
 quart

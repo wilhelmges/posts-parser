@@ -1,28 +1,38 @@
-from telegram import Bot
-import asyncio
+import os
+from dotenv import load_dotenv; load_dotenv()# Завантаження змінних середовища
+from mistralai import Mistral
 
-# Initialize the bot with your token
+api_key = os.environ["MISTRAL_API_KEY"]
+model = "mistral-large-latest"
 
-text="""
-На сцені музика лунає,
-Танок вогонь у серці має.
-Ноги летять, як крила в птаха,
-Ритм захоплює, душа не стиха.
-"""
-bot = Bot(token="5602757659:AAGO_vOvgfb3p_EwEvNlky4QbeBLNA4oyVo")
+client = Mistral(api_key=api_key)
+content = '''
 
+💃 Вівторок, 4 березня, 19:30 🕺🏼BACHATA ❤️ SALSA ❤️ KIZOMBA в Buena vista social bar 🎉
 
-# Chat ID of the group
-chat_id = "@opendance_life" #-2073535024  # Replace with your group's chat ID
+✅ 19:30 МК Bachata by
+Yurii & Rina, ARdance Project.
 
-# ID of the topic (thread) within the group
-message_thread_id = 71477  # Replace with the ID of the topic
+💃 Вечірка
+🍹 Welcome drink
 
-# Send a message to the specific chat topic
-async def main():
-    await bot.send_message(
-        chat_id=chat_id,text=text,
-        message_thread_id=message_thread_id
-    )
+💰 Вартість 150 грн.
 
-asyncio.run(main())
+🙋‍♂️ Чекаємо на Вас! 
+
+📌 м. Київ, вул. Велика Житомирська, 8/14.
+
+м. Майдан Незалежності, 
+м. Золоті ворота.
+'''
+
+chat_response = client.chat.complete(
+    model= model,
+    messages = [
+        {
+            "role": "user",
+            "content": "Нижче приведений текст. Визнач вірогідність того, що цей текст є анонсом офлайн-події. Результат має бути в діапазоні від 0 до 100. Не потрібно пояснень, лише число: "+content,
+        },
+    ]
+)
+print(chat_response.choices[0].message.content)

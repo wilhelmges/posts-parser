@@ -30,10 +30,9 @@ async def index():
 async def scan_sources():
     POST_LIMIT = 10
     """Ендпоінт для сканування джерел контенту"""
+    category = 'dance'  # або отримати з параметрів запиту # Додати визначення category
+
     try:
-        # Додати визначення category
-        category = 'dance'  # або отримати з параметрів запиту
-        
         if not client.is_connected():
             await client.connect()
             
@@ -60,16 +59,18 @@ async def scan_sources():
                     if len(text)<10:
                         continue
                     _hash = hash((message.id, message.chat_id))
+                    print(text[:40])
                     possibility = calculate_event_possibility(text)
-                    
+                    print(possibility)
+
                     post_to_save = {"fulltext": text, "source_slug": source['slug']+':'+source['media'], "category": category,"city":source['city'], 'status': 'notreviewed', "hash": _hash, "possibility": possibility}
-                    print(possibility, text[:40])
-                    try: 
-                        supabase.table('posts').insert(post_to_save).execute()
-                        added += 1
+                    print(post_to_save)
+                    try:
+                        supabase.table('posts').upsert(post_to_save).execute()
                     except Exception as e:
-                        print(f"Помилка при збереженні посту: {e}")
-                        continue
+                        pass
+                    added += 1
+                    # print(f"Помилка при отриманні посту: {e}-{str(e)}")
 
         return jsonify({
             "status": "success",
@@ -77,7 +78,7 @@ async def scan_sources():
         })
         
     except Exception as e:
-        print(f"Детальна помилка: {str(e)}")  # додати для кращого логування
+        print(f"Детальна помилка: {str(e)} {e}")  # додати для кращого логування
         return jsonify({
             "status": "error",
             "message": f"error: {str(e)}"
