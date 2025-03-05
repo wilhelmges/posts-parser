@@ -7,7 +7,7 @@ from mistralai import Mistral
 
 client_openai = OpenAI(api_key=os.getenv("OPENAPI"))
 api_key = os.environ["MISTRAL_API_KEY"]
-model = "mistral-large-latest"
+model = "mistral-small-latest" # "mistral-large-latest"
 client_mistral = Mistral(api_key=api_key)
 
 def refine(date:str='18.02')->str:
@@ -53,15 +53,18 @@ def create_brief_for_event(text: str)->str:
 def calculate_event_possibility(text: str)->str:
     content = 'переглянь публікацію і розрахуй числову вірогідність того, що ця публікація є анонсом офлайн події. вкажи вірогідність як результат. вірогідність має бути виражена від 0 до 100. включи у відповідь виключно цифри, нічого зайвого. не треба пояснень, лише числове значення :'+text
 
-    response = client_mistral.chat.complete(
-        model=model,
-        messages=[
-            {
-                "role": "user",
-                "content": "Нижче приведений текст. Визнач вірогідність того, що цей текст є анонсом офлайн-події. Результат має бути в діапазоні від 0 до 100. Не потрібно пояснень, лише число: " + content,
-            },
-        ]
-    )
+    try:
+        response = client_mistral.chat.complete(
+            model=model,
+            messages=[
+                {
+                    "role": "user",
+                    "content": "Нижче приведений текст. Визнач вірогідність того, що цей текст є анонсом офлайн-події. Результат має бути в діапазоні від 0 до 100. Не потрібно пояснень, лише число: " + content,
+                },
+            ]
+        )
+    except Exception as e:
+        return -1
 
     try: 
         rez = int(eval(response.choices[0].message.content))

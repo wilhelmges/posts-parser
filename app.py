@@ -11,6 +11,8 @@ import datetime
 from publisher import prepare_posts
 import time, datetime
 from dotenv import load_dotenv; load_dotenv()# Завантаження змінних середовища
+import traceback;
+import time
 
 # Налаштування Telegram клієнта
 api_id = int(os.getenv('TELEGRAM_API_ID'))
@@ -50,6 +52,7 @@ async def scan_sources():
 
             for message in messages:
                 if message.text:
+                    time.sleep(10) #delay to overcome ai limit per seconds
                     #print(dir(message)); exit()
                     text = (message.message).replace("\n", ". ")
                     post_date= (message.date).date()
@@ -59,16 +62,19 @@ async def scan_sources():
                     if len(text)<10:
                         continue
                     _hash = hash((message.id, message.chat_id))
-                    print(text[:40])
-                    possibility = calculate_event_possibility(text)
-                    print(possibility)
+                    #print(text[:40])
 
-                    post_to_save = {"fulltext": text, "source_slug": source['slug']+':'+source['media'], "category": category,"city":source['city'], 'status': 'notreviewed', "hash": _hash, "possibility": possibility}
-                    print(post_to_save)
+                    post_to_save = {"fulltext": text, "source_slug": source['slug']+':'+source['media'], "category": category,"city":source['city'], 'status': 'notreviewed', "hash": _hash}
+                    #print(post_to_save)
                     try:
-                        supabase.table('posts').upsert(post_to_save).execute()
+                        supabase.table('posts').insert(post_to_save).execute()
                     except Exception as e:
-                        pass
+                        pass ;print('new post insert error')
+                        traceback.print_exc()
+                        exit()
+
+                    possibility = calculate_event_possibility(text) #print(f'possibility updated {possibility}')
+                    supabase.table('posts').update({"possibility": possibility}).eq("hash", _hash).execute()
                     added += 1
                     # print(f"Помилка при отриманні посту: {e}-{str(e)}")
 
@@ -79,6 +85,7 @@ async def scan_sources():
         
     except Exception as e:
         print(f"Детальна помилка: {str(e)} {e}")  # додати для кращого логування
+        traceback.print_exc()
         return jsonify({
             "status": "error",
             "message": f"error: {str(e)}"

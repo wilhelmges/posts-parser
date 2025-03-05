@@ -3,9 +3,10 @@ from dotenv import load_dotenv; load_dotenv()# Завантаження змін
 from mistralai import Mistral
 
 api_key = os.environ["MISTRAL_API_KEY"]
-model = "mistral-large-latest"
+model = "mistral-small-latest"
 
 client = Mistral(api_key=api_key)
+
 content = '''
 
 💃 Вівторок, 4 березня, 19:30 🕺🏼BACHATA ❤️ SALSA ❤️ KIZOMBA в Buena vista social bar 🎉
