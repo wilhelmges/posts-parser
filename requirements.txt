@@ -1,14 +1,9 @@
 supabase
 mistralai
 python-dotenv
-openai
 quart
 quart-cors
 telethon
-ensta==5.2.5
 moviepy==1.0.3
-hypercorn
-werkzeug
-Pillow>=10.0.0
 python-telegram-bot
 Babel
