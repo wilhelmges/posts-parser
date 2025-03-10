@@ -4,6 +4,5 @@ python-dotenv
 quart
 quart-cors
 telethon
-moviepy==1.0.3
 python-telegram-bot
 Babel

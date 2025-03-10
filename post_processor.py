@@ -1,4 +1,3 @@
-from openai import OpenAI
 from datetime import datetime
 import os;
 from dotenv import load_dotenv;
@@ -8,7 +7,6 @@ import re
 from mistralai import Mistral
 import ast
 
-client_openai = OpenAI(api_key=os.getenv("OPENAPI"))
 api_key = os.environ["MISTRAL_API_KEY"]
 model = "mistral-medium-latest"  # "mistral-large-latest"
 client_mistral = Mistral(api_key=api_key)
