@@ -14,8 +14,10 @@ def prepare_posts(topic='dance'):
         # print(repost['created_at'], text[:40])
         try:
             print( text[:25], repost['source_slug'], repost['id']);
+            time.sleep(7)
             date = find_date_for_danceparty(text)
             print(date)
+            time.sleep(7)
             brief = create_brief_for_event(text)
             print(brief,)
             data, count = supabase.table('posts').update({'event_date': date, 'brief':brief}).eq('id', repost['id']).execute()

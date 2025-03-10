@@ -52,7 +52,7 @@ async def scan_sources():
 
             for message in messages:
                 if message.text:
-                    time.sleep(10) #delay to overcome ai limit per seconds
+
                     #print(dir(message)); exit()
                     text = (message.message).replace("\n", ". ")
                     post_date= (message.date).date()
@@ -68,14 +68,14 @@ async def scan_sources():
                     #print(post_to_save)
                     try:
                         supabase.table('posts').insert(post_to_save).execute()
+                        time.sleep(10) #delay to overcome ai limit per seconds
+                        possibility = calculate_event_possibility(text)  # print(f'possibility updated {possibility}')
+                        supabase.table('posts').update({"possibility": possibility}).eq("hash", _hash).execute()
+                        added += 1
                     except Exception as e:
-                        pass ;print('new post insert error')
-                        traceback.print_exc()
-                        exit()
+                        pass #;print('new post insert error'); traceback.print_exc()
 
-                    possibility = calculate_event_possibility(text) #print(f'possibility updated {possibility}')
-                    supabase.table('posts').update({"possibility": possibility}).eq("hash", _hash).execute()
-                    added += 1
+
                     # print(f"Помилка при отриманні посту: {e}-{str(e)}")
 
         return jsonify({
@@ -134,10 +134,10 @@ async def publishdigests():
                 event_date = datetime.datetime.strptime(repost['event_date'], "%Y-%m-%d")
                 formatted_date = format_datetime(event_date, "EEEE, d MMMM ", locale="uk")
                 text = repost['brief'] if repost['brief'] else repost['fulltext']
-                digest = digest + f"<b>{formatted_date}</b>\n {text}\n\n"
+                digest = digest + f"<strong>{formatted_date}</strong>\n {text}\n\n"
             if city=="Київ":
-                digest = digest + f"<b> анонси вечірок у Львові, Дніпрі, Одесі, Тернополі</b>, Києві ви можете подивитись в групі https://t.me/opendance_life, також тут можна глянути анонси нових танцювальних наборів і танцювальні фестивалі"
-            print(digest[:20])
+                digest = digest + f"<strong> анонси вечірок у Львові, Дніпрі, Одесі, Тернополі</strong>, Києві ви можете подивитись в групі <a href='https://t.me/opendance_life'>чат з танців</a>, також тут можна глянути анонси нових танцювальних наборів і танцювальні фестивалі"
+            print(digest)
 
             try:
                 #await bot.send_message(chat_id='@test_tg_api_polytopic', message_thread_id=1, text='12345')
