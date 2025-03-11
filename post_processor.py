@@ -12,12 +12,14 @@ model = "mistral-medium-latest"  # "mistral-large-latest"
 client_mistral = Mistral(api_key=api_key)
 
 
-def refine(date: str = '18.02') -> str:
-    date = '2025-' + date[5:]
+def refine(date: str ) -> str:
+    date = '2025-' + date[5:10]
+    print(f"date before refine {date}")
     try:
-        date = datetime.strptime(date, "%Y.%d.%m").date()
+        date = datetime.strptime(date, "%Y-%m-%d").date()
     except:
         date = datetime.now()
+    print(f"date after refine {date}")
     return str(date)
 
 
