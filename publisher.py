@@ -49,7 +49,8 @@ def publish_dance_parties():
                 text = repost['brief'] if repost['brief'] else repost['fulltext']
                 digest = digest + f"<b>{event_date.strftime('%A - %d %B')}</b>\n {text}\n\n"
             if city=="Київ":
-                digest = digest + f"<b> анонси вечірок у Львові, Дніпрі, Одесі, Тернополі, Києві ви можете подивитись в групі https://t.me/opendance_life, також тут можна глянути анонси нових танцювальних наборів і танцювальні фестивалі"
+                digest = digest + f" також ви можете відстежувати анонси подій в instagram https://www.instagram.com/vitodancedigest/"
+                #digest = digest + f"<b> анонси вечірок у Львові, Дніпрі, Одесі, Тернополі, Києві ви можете подивитись в групі https://t.me/opendance_life, також тут можна глянути анонси нових танцювальних наборів і танцювальні фестивалі"
             print(group);print(topic);
             client.send_message(entity=group, reply_to=topic, message=digest)
 

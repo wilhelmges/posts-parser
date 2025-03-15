@@ -136,7 +136,8 @@ async def publishdigests():
                 text = repost['brief'] if repost['brief'] else repost['fulltext']
                 digest = digest + f"<strong>{formatted_date}</strong>\n {text}\n\n"
             if city=="Київ":
-                digest = digest + f"<strong> анонси вечірок у Львові, Дніпрі, Одесі, Тернополі</strong>, Києві ви можете подивитись в групі <a href='https://t.me/opendance_life'>чат з танців</a>, також тут можна глянути анонси нових танцювальних наборів і танцювальні фестивалі"
+                digest = digest + f" також ви можете відстежувати <b>анонси подій в instagram</b> https://www.instagram.com/vitodancedigest/"
+                #digest = digest + f"<strong> анонси вечірок у Львові, Дніпрі, Одесі, Тернополі</strong>, Києві ви можете подивитись в групі <a href='https://t.me/opendance_life'>чат з танців</a>, також тут можна глянути анонси нових танцювальних наборів і танцювальні фестивалі"
             print(digest)
 
             try:
