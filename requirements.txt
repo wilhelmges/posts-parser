@@ -6,3 +6,4 @@ quart-cors
 telethon
 python-telegram-bot
 Babel
+dotenv
