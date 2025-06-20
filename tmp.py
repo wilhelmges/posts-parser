@@ -1,5 +1,9 @@
 import os
 from dotenv import load_dotenv; load_dotenv()# Завантаження змінних середовища
+from quart import Quart, render_template, jsonify
+from quart_cors import cors
+from telethon import TelegramClient, events
+
 # from mistralai import Mistral
 #
 # api_key = os.environ["MISTRAL_API_KEY"]
