@@ -12,7 +12,7 @@ supabase: Client = create_client(url, key)
 
 
 def get_sources():
-    response = supabase.table('sources').select("id, slug").eq('category','church').execute()
+    response = supabase.table('sources').select("slug, topic").eq('category','dance').execute()
     return response.data
 
 def findPost(text, date):
@@ -36,7 +36,7 @@ def addPost(text, date, source='unknown'):
 
 if __name__ == '__main__':
     pass
-    # print(get_sources())
+    print(get_sources())
     # print(findPost('hello, test 3'))
     # addRawPost('hello, test')
     #

@@ -1,8 +1,7 @@
 from telethon.sync import TelegramClient
 from parse_lib import parse_topic, parse_channel
-from repository import supabase
+from services.repository import supabase
 import datetime
-import re
 
 api_id = 14535551 #app1
 api_hash = 'ee049ec9130de53ec5336fe819e49365'

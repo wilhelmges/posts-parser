@@ -70,7 +70,7 @@ def calculate_event_possibility(text: str)->int:
 
     try:
         response = client_mistral.chat.complete(
-            model=model,
+            model="mistral-large-latest",
             messages=[
                 {
                     "role": "user",

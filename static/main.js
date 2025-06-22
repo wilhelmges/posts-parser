@@ -9,7 +9,7 @@ const PostStatus = {
 };
 
 document.addEventListener('alpine:init', () => {
-    const supabase = createClient('https://myfvudumhgbrufiiclxn.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15ZnZ1ZHVtaGdicnVmaWljbHhuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzUwNTg0NDcsImV4cCI6MjA1MDYzNDQ0N30.C1p1G5lDsOhjSMWWKIX58Ct4QQVRUhTX_KyFDZ9qJOw')
+    const supabase = createClient('https://tqhegtqzmaiogyetozzs.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxaGVndHF6bWFpb2d5ZXRvenpzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA1MzMyNDksImV4cCI6MjA2NjEwOTI0OX0._eh6xCpn981rWm6MxS41LO_qHnnxKdSXyQz5JBY7npQ')
     
     Alpine.data('posts', () => ({
         locale: 'uk',

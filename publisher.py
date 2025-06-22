@@ -1,7 +1,7 @@
 from telethon.sync import TelegramClient
-from repository import findPost, addPost, supabase
+from services.repository import supabase
 import time, datetime, locale
-from post_processor import find_date_for_danceparty, create_brief_for_event
+from services.post_processor import find_date_for_danceparty, create_brief_for_event
 
 api_id = 14535551; api_hash = 'ee049ec9130de53ec5336fe819e49365' # app1
 
