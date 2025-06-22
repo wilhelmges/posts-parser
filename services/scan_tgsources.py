@@ -1,8 +1,8 @@
 import os
 import datetime, time, traceback
 from telethon import TelegramClient
-from repository import supabase
-from post_processor import calculate_event_possibility
+from services.repository import supabase
+from services.post_processor import calculate_event_possibility
 
 from dotenv import load_dotenv; load_dotenv()
 api_id = int(os.getenv('TELEGRAM_API_ID'))
@@ -53,7 +53,7 @@ async def main(category='dance', post_limit=7):
             except Exception:
                 traceback.print_exc()
 
-    return {"status": "success", "added": added}
+    return added
 
 if __name__ == "__main__":
     with client:

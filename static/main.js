@@ -182,7 +182,7 @@ document.addEventListener('alpine:init', () => {
 
         getSummaries: async function() {
             try {
-                const response = await fetch('/api/getsummaries');
+                const response = await fetch('/api/prepare_posts');
                 const data = await response.json();
                 
                 if (data.status === 'success') {

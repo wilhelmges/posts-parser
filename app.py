@@ -5,9 +5,11 @@ from telegram import Bot
 import os
 from babel.dates import format_datetime
 
+from publisher import prepare_posts
 from services.post_processor import calculate_event_possibility
 from services.repository import supabase
-from publisher import prepare_posts
+from services.scan_tgsources import main as sts
+from publisher import prepare_posts as pp
 import datetime
 from dotenv import load_dotenv; load_dotenv()# Завантаження змінних середовища
 import traceback
@@ -34,52 +36,10 @@ async def scan_sources():
     category = 'dance'  # або отримати з параметрів запиту # Додати визначення category
 
     try:
-        if not client.is_connected():
-            await client.connect()
-            
-        current_date =(datetime.date.today())
-        kyivdancesources = supabase.table('sources').select("id, slug,media, topic, city").eq('media', 'telega').eq('category',category).limit(20).execute().data
-        added = 0
-        possibilities = []
-        for source in kyivdancesources:
-            print(source['slug'])
-
-            if source['topic']:
-                messages = await client.get_messages(source['slug'], reply_to=source['topic'], limit=POST_LIMIT)
-            else:
-                messages = await client.get_messages(source['slug'], limit=POST_LIMIT)
-
-            for message in messages:
-                if message.text:
-
-                    #print(dir(message)); exit()
-                    text = (message.message).replace("\n", ". ")
-                    post_date= (message.date).date()
-                   
-                    if (current_date - post_date).days>6:
-                        break
-                    if len(text)<10:
-                        continue
-                    _hash = hash((message.id, message.chat_id))
-                    #print(text[:40])
-
-                    post_to_save = {"fulltext": text, "source_slug": source['slug']+':'+source['media'], "category": category,"city":source['city'], 'status': 'notreviewed', "hash": _hash}
-                    #print(post_to_save)
-                    try:
-                        supabase.table('posts').insert(post_to_save).execute()
-                        time.sleep(10) #delay to overcome ai limit per seconds
-                        possibility = calculate_event_possibility(text)  # print(f'possibility updated {possibility}')
-                        supabase.table('posts').update({"possibility": possibility}).eq("hash", _hash).execute()
-                        added += 1
-                    except Exception as e:
-                        pass #;print('new post insert error'); traceback.print_exc()
-
-
-                    # print(f"Помилка при отриманні посту: {e}-{str(e)}")
-
+        added = await sts(category=category, post_limit=POST_LIMIT)
         return jsonify({
             "status": "success",
-            "added": added,
+            "added": added
         })
         
     except Exception as e:
@@ -90,17 +50,18 @@ async def scan_sources():
             "message": f"error: {str(e)}"
         }), 500
 
-@app.route('/api/getsummaries')
-async def getsummaries():
+@app.route('/api/prepare_posts')
+async def prepare_posts():
     """Ендпоінт для отримання резюме анонсів"""
     try:
-        processed = prepare_posts()
+        processed = pp()
         return jsonify({
             "status": "success",
             "processed": processed
         })
 
     except Exception as e:
+        print(str(e))
         return jsonify({
             "status": "error",
             "message": f"error: {str(e)}"
@@ -117,7 +78,7 @@ async def publishdigests():
         current = datetime.date.today()
         response = []
         group = '@opendance_life'
-        cities = {"Київ":69523, "Дніпро": 75286 , "Львів": 75292, "Одеса": 75294, "Тернопіль":75417} #,
+        cities = {"Київ":69523} #, "Дніпро": 75286 , "Львів": 75292, "Одеса": 75294, "Тернопіль":75417} #,
         for city in  cities:
             topic = cities[city]
             response = supabase.table('posts').select(
@@ -128,15 +89,18 @@ async def publishdigests():
             print('publishing '+city)
 
             client.parse_mode = 'html'
-            digest = 'дайджест вечірок на тиждень \n\n'
+            num = 1
+            digest = 'дайджест вечірок на тиждень \n'
+            if city == "Київ":
+                digest = digest + f"💃🕺🏻 повні анонси вечірок у Києві🏛️, Вінниці⚓, Хмельницькому🏹 <strong>анонси ноборів в студії</strong>,  ви можете подивитись в групі <a href='https://t.me/opendance_life'>чат з танців</a>, також тут можна глянути анонси про танцювальні фестивалі\n\n"
+                # digest = digest + f" також ви можете відстежувати <b>анонси подій в instagram</b> https://www.instagram.com/vitodancedigest/"
+
             for repost in response:
+                print(num, repost['brief'][:35])
                 event_date = datetime.datetime.strptime(repost['event_date'], "%Y-%m-%d")
                 formatted_date = format_datetime(event_date, "EEEE, d MMMM ", locale="uk")
                 text = repost['brief'] if repost['brief'] else repost['fulltext']
                 digest = digest + f"<strong>{formatted_date}</strong>\n {text}\n\n"
-            if city=="Київ":
-                digest = digest + f" також ви можете відстежувати <b>анонси подій в instagram</b> https://www.instagram.com/vitodancedigest/"
-                #digest = digest + f"<strong> анонси вечірок у Львові, Дніпрі, Одесі, Тернополі</strong>, Києві ви можете подивитись в групі <a href='https://t.me/opendance_life'>чат з танців</a>, також тут можна глянути анонси нових танцювальних наборів і танцювальні фестивалі"
             print(digest)
 
             try:

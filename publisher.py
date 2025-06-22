@@ -7,7 +7,8 @@ api_id = 14535551; api_hash = 'ee049ec9130de53ec5336fe819e49365' # app1
 
 def prepare_posts(topic='dance'):
     current = datetime.date.today()
-    responce = supabase.table('posts').select("fulltext, id, created_at, source_slug").eq('status','needsummary').eq('category',topic).order('created_at', desc=True).limit(15).execute().data #.is_('brief', 'null')
+    responce = supabase.table('posts').select("fulltext, id, source_slug").eq('status','needsummary').eq('category',topic).limit(25).execute().data #.is_('brief', 'null')
+    print(responce)
     processed = 0
     for repost in responce:
         text = repost['fulltext']
