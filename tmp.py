@@ -1,43 +1,23 @@
 import os
 from dotenv import load_dotenv; load_dotenv()# Завантаження змінних середовища
-from quart import Quart, render_template, jsonify
-from quart_cors import cors
 from telethon import TelegramClient, events
+api_id = int(os.getenv('TELEGRAM_API_ID'))
+api_hash = os.getenv('TELEGRAM_API_HASH')
+client = TelegramClient('vvn', api_id, api_hash)
 
-# from mistralai import Mistral
-#
-# api_key = os.environ["MISTRAL_API_KEY"]
-# model = "mistral-small-latest"
-#
-# client = Mistral(api_key=api_key)
-#
-# content = '''
-#
-# 💃 Вівторок, 4 березня, 19:30 🕺🏼BACHATA ❤️ SALSA ❤️ KIZOMBA в Buena vista social bar 🎉
-#
-# ✅ 19:30 МК Bachata by
-# Yurii & Rina, ARdance Project.
-#
-# 💃 Вечірка
-# 🍹 Welcome drink
-#
-# 💰 Вартість 150 грн.
-#
-# 🙋‍♂️ Чекаємо на Вас!
-#
-# 📌 м. Київ, вул. Велика Житомирська, 8/14.
-#
-# м. Майдан Незалежності,
-# м. Золоті ворота.
-# '''
-#
-# chat_response = client.chat.complete(
-#     model= model,
-#     messages = [
-#         {
-#             "role": "user",
-#             "content": "Нижче приведений текст. Визнач вірогідність того, що цей текст є анонсом офлайн-події. Результат має бути в діапазоні від 0 до 100. Не потрібно пояснень, лише число: "+content,
-#         },
-#     ]
-# )
-# print(chat_response.choices[0].message.content)
+
+
+async def main():
+    entity = await client.get_entity('https://t.me/+fDwTcGlT7Pw0ZTEy ')
+    # https://t.me/ethkyiv_ua https://t.me/improvisationschoolua
+    messages  = await client.get_messages(entity, limit=2)
+    print(messages)
+
+
+with client:
+        client.loop.run_until_complete(main())
+
+# for source in sources:
+#     messages = await client.get_messages(source['slug'], reply_to=source['topic'],
+#                                          limit=post_limit) if 'topic' in source and source[
+#         'topic'] else await client.get_messages(source['slug'], limit=post_limit)

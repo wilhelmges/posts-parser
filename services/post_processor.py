@@ -1,16 +1,15 @@
 from datetime import datetime
 import os;
-from dotenv import load_dotenv;
-
-load_dotenv()
+from dotenv import load_dotenv;load_dotenv()
 import re
 from mistralai import Mistral
+from openai import OpenAI
 import ast
 
-api_key = os.environ["MISTRAL_API_KEY"]
+mistral_api_key = os.environ["MISTRAL_API_KEY"]
 model = "mistral-medium-latest"  # "mistral-large-latest"
-client_mistral = Mistral(api_key=api_key)
-
+client_mistral = Mistral(api_key=mistral_api_key)
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def refine(date: str ) -> str:
     date = '2025-' + date[5:10]
@@ -92,6 +91,28 @@ def calculate_event_possibility(text: str)->int:
             break
     return int(num) if num else -1
 
+def brief_by_any_ai(text, ):
+    content = """
+        зроби резюме з опису офлайн-події один параграф.
+        резюме має бути написано українською мовою.
+        Адаптуй текст для публікації в telegram. 
+        У відповідь включи лише фактичну інформацію,
+        прибери з тексту посилання, якщо вони там є,
+        текст має бути в нейтрально-діловому стилі, 
+        прибери з тексту емоційні описи : 
+        """ + text
+    return ask_openai(content)
+
+def ask_openai(content="Привіт, що ти вмієш?"):
+    response = client.chat.completions.create(
+        model="gpt-4.1-mini",
+        messages=[
+            #{"role": "system", "content": "Ти помічник."},
+            {"role": "user", "content": content}
+        ]
+    )
+    return (response.choices[0].message.content)
+
 if __name__=='__main__':
     text = """
     🔥 21.06 | Субота | DANCE CASA Promo Party 💃 в Києві
@@ -113,6 +134,7 @@ if __name__=='__main__':
 вул. Хорива, 25/12, Київ, 04071
 (м. Контрактова площа — 5-7 хв)
     """
-    print(create_brief_for_event(text))
+    print(brief_by_any_ai(text))
+    #print(ask_openai())
 
 
