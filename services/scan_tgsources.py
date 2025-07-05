@@ -41,7 +41,7 @@ async def main(category='dance', post_limit=7):
             if not message.text:
                 continue
             text = message.message.replace("\n", ". ")
-            post_date = message.date.date()
+            post_date =  message.date.date()
             if (current_date - post_date).days > 6 or len(text) < 10:
                 continue
             print(text[:40], post_date)

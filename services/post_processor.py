@@ -25,6 +25,7 @@ def refine(date: str ) -> str:
 def find_date_for_danceparty(text: str):
     # data = '2018-02-13'
     content = 'look for the event date in the Ukrainian text below. You must  convert this event date to format YYYY-MM-DD. If you put redundant information - I will KILL you, fucking bot. I need ONLY pure result, without explanation: ' + text  # , приведи цю дату, у відповіді вкажи виключно дату і нічого зайвого
+    return refine(ask_openai(content))
     response = client_mistral.chat.complete(
         messages=[
             {
@@ -51,6 +52,7 @@ def create_brief_for_event(text: str) -> str:
     текст має бути в нейтрально-діловому стилі, 
     прибери з тексту емоційні описи : 
     """ + text
+    return ask_openai(content)
     response = client_mistral.chat.complete(
         messages=[
             {
