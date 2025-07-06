@@ -7,3 +7,4 @@ telethon
 python-telegram-bot
 Babel
 dotenv
+openai
