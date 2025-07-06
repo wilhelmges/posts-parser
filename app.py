@@ -115,6 +115,7 @@ async def publishdigests():
             "message": "Дайджест опубліковано"
         })
     except Exception as e:
+        print(e, str(e))
         return jsonify({
             "status": "error",
             "message": f"error: {str(e)}"
