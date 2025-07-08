@@ -67,6 +67,7 @@ document.addEventListener('alpine:init', () => {
         },
 
         markPostAsArchived: async function (id) {
+        console.log(' trying to archive '+id)
             try {
                 const {error} = await supabase
                     .from('posts')
