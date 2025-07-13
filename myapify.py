@@ -24,7 +24,7 @@ def main(category='dance', items=1, city="Київ"):
         if (current_date - post_date).days > 7 :
             pass #continue
         print(message['caption'][:30], post_date, message['shortCode'], message['id'])
-        _hash = hash((message.id, message.chat_id))
+        _hash = hash(message['id'])
         # we need to check if this record was inserted already
         post_data = {
             # problems with receiving in js "id":message['id'],
@@ -87,5 +87,5 @@ def get_last_insta_posts(profiles, items = 1 ):
     return rez
 
 if __name__=='__main__':
-    main(items=3)
+    main(items=5)
     #print(get_last_insta_posts(profiles=["lagofamilykyiv","salsahubkyiv"]))
