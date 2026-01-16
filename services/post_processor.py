@@ -12,7 +12,7 @@ client_mistral = Mistral(api_key=mistral_api_key)
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def refine(date: str ) -> str:
-    date = '2025-' + date[5:10]
+    date = '2026-' + date[5:10]
     # print(f"date before refine {date}")
     try:
         date = datetime.strptime(date, "%Y-%m-%d").date()
