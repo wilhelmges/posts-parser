@@ -1,6 +1,17 @@
-from sdata import items
-print(items[0])
+print (2+2)
+api_id = 29242540
+api_hash = '40e13a3d48e04968bf1a31092509feb0'
+from telethon.sync import TelegramClient, events
 
+with TelegramClient('videv', api_id, api_hash) as client:
+   client.send_message('me', 'Hello, myself!')
+   print(client.download_profile_photo('me'))
+
+   @client.on(events.NewMessage(pattern='(?i).*Hello'))
+   async def handler(event):
+      await event.reply('Hey!')
+
+   client.run_until_disconnected()
 # import os
 # from dotenv import load_dotenv; load_dotenv()# Завантаження змінних середовища
 # from telethon import TelegramClient, events
