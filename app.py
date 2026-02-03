@@ -18,7 +18,7 @@ import time
 # Налаштування Telegram клієнта
 api_id = int(os.getenv('TELEGRAM_API_ID'))
 api_hash = os.getenv('TELEGRAM_API_HASH')
-client = TelegramClient('videv', api_id, api_hash)
+client = TelegramClient('vilyashko', api_id, api_hash)
 # Use this if you're authenticating as a bot
 bot = Bot(os.getenv('DANCEDIGEST_BOT_TOKEN'))
 

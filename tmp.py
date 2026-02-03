@@ -3,7 +3,7 @@ api_id = 29242540
 api_hash = '40e13a3d48e04968bf1a31092509feb0'
 from telethon.sync import TelegramClient, events
 
-with TelegramClient('videv', api_id, api_hash) as client:
+with TelegramClient('vilyashko', api_id, api_hash) as client:
    client.send_message('me', 'Hello, myself!')
    print(client.download_profile_photo('me'))
 
