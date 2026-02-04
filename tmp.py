@@ -1,15 +1,21 @@
 print (2+2)
-api_id = 29242540
-api_hash = '40e13a3d48e04968bf1a31092509feb0'
+import os
+from dotenv import load_dotenv; load_dotenv()# Завантаження змінних середовища
+api_id = int(os.getenv('TELEGRAM_API_ID'))
+api_hash = os.getenv('TELEGRAM_API_HASH')
 from telethon.sync import TelegramClient, events
 
 with TelegramClient('vilyashko', api_id, api_hash) as client:
    client.send_message('me', 'Hello, myself!')
-   print(client.download_profile_photo('me'))
+   me = client.get_me()
+   print(me.id, me.username)
+   dialogs = client.get_dialogs(limit=1)
+   print(dialogs)
 
-   @client.on(events.NewMessage(pattern='(?i).*Hello'))
-   async def handler(event):
-      await event.reply('Hey!')
+
+   # @client.on(events.NewMessage(pattern='(?i).*Hello'))
+   # async def handler(event):
+   #    await event.reply('Hey!')
 
    client.run_until_disconnected()
 # import os

@@ -9,7 +9,7 @@ from services.post_processor import calculate_event_possibility
 from dotenv import load_dotenv; load_dotenv()
 api_id = int(os.getenv('TELEGRAM_API_ID'))
 api_hash = os.getenv('TELEGRAM_API_HASH')
-client = TelegramClient('vvn', api_id, api_hash)
+client = TelegramClient('vilyashko', api_id, api_hash)
 
 async def main(category='dance', post_limit=7):
     added = 0

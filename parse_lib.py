@@ -1,8 +1,10 @@
 from telethon import TelegramClient
 from telethon.sync import TelegramClient as tcsync
 
-api_id = 14535551 #app1
-api_hash = 'ee049ec9130de53ec5336fe819e49365'
+import os
+from dotenv import load_dotenv; load_dotenv()# Завантаження змінних середовища
+api_id = int(os.getenv('TELEGRAM_API_ID'))
+api_hash = os.getenv('TELEGRAM_API_HASH')
 
 def parse_channel(session, groupid, limit=3):
     with tcsync(session, api_id, api_hash) as client:
